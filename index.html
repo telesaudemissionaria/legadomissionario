@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Coroa do Sacrifício: Legado Missionário</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutral (Background: #F8F4E3 - Papel Antigo, Text: #333333 - Tinta Escura, Primary Accent: #8B4513 - Couro, Secondary Accent: #BDB76B - Oliva Escuro) -->
+    <!-- Application Structure Plan: A thematic, single-page application designed for non-linear exploration. The structure includes: 1) A Hero section for introduction. 2) An interactive "Profiles" section with clickable cards to reveal detailed biographies, making personal stories engaging. 3) A "Hostile World" section with tabs to explain the medical context without overwhelming the user. 4) A "Turning Tide" data visualization section with a Chart.js bar chart to highlight the key quantitative finding—the shift in missionary mortality causes. 5) A "Legacy of Healing" section to show the evolution towards institutional medicine. 6) A "Faith" section with quotes to provide spiritual context. This structure was chosen to transform a dense report into a digestible, user-driven narrative, allowing users to explore topics of interest in any order via a sticky navigation bar, which is superior for usability compared to a linear document format. -->
+    <!-- Visualization & Content Choices: 1) Missionary Biographies -> Goal: Compare/Inform -> Method: Interactive Cards (HTML/CSS/JS) -> Interaction: Click to reveal modal with details -> Justification: Breaks down long text, focuses user attention. 2) Medical Context -> Goal: Inform -> Method: Tabbed Interface (HTML/CSS/JS) -> Interaction: Click to switch content -> Justification: Organizes complex information into clear, thematic chunks. 3) Mortality Data (Table 1) -> Goal: Compare/Change -> Method: Bar Chart (Chart.js/Canvas) -> Interaction: Hover for tooltips with exact data -> Justification: A bar chart is the most effective way to visually compare categorical data between two periods, making the report's core quantitative insight immediately apparent and impactful. 4) Legacy Evolution -> Goal: Show Process -> Method: Vertical Timeline (HTML/Tailwind) -> Interaction: Subtle hover effects -> Justification: Clearly illustrates the chronological progression from sacrifice to institutional legacy. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background-color: #F8F4E3;
+            color: #333333;
+        }
+        h1, h2, h3 {
+            font-family: 'Lora', serif;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #8B4513;
+            border-bottom-color: #8B4513;
+        }
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .modal-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-[#F8F4E3] text-gray-800">
+
+    <header class="bg-[#F8F4E3]/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3">
+            <ul class="flex justify-center space-x-4 md:space-x-8 text-sm md:text-base">
+                <li><a href="#profiles" class="nav-link font-semibold pb-1">Perfis</a></li>
+                <li><a href="#context" class="nav-link font-semibold pb-1">Contexto</a></li>
+                <li><a href="#data" class="nav-link font-semibold pb-1">Dados</a></li>
+                <li><a href="#legacy" class="nav-link font-semibold pb-1">Legado</a></li>
+                <li><a href="#faith" class="nav-link font-semibold pb-1">Fé</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+
+        <section id="hero" class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-bold text-[#8B4513] mb-4">A Coroa do Sacrifício</h1>
+            <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-700">Uma exploração interativa da fé, enfermidade e o legado dos missionários que enfrentaram um mundo hostil, transformando seu sofrimento em um catalisador para a medicina moderna.</p>
+        </section>
+
+        <section id="profiles" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">Perfis de Sacrifício</h2>
+            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Clique em um perfil para descobrir a história de fé e fragilidade por trás de cada figura. Suas vidas, marcadas pela dor, tornaram-se um testemunho de perseverança e inspiração.</p>
+            <div id="profiles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            </div>
+        </section>
+
+        <section id="context" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">Um Mundo Hostil</h2>
+            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Explore o cenário médico dos séculos XVIII e XIX. A medicina era uma prática de impotência, onde doenças hoje tratáveis eram sentenças de morte e os tratamentos, muitas vezes, mais prejudiciais que a própria enfermidade.</p>
+            <div class="max-w-3xl mx-auto bg-white/50 rounded-lg shadow-lg p-1">
+                <div id="tabs-buttons" class="flex border-b border-gray-300">
+                </div>
+                <div id="tabs-content" class="p-6">
+                </div>
+            </div>
+        </section>
+
+        <section id="data" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">A Virada da Maré</h2>
+            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Este gráfico compara as razões pelas quais os missionários deixaram o campo no século XIX versus o início do século XX. Observe a mudança dramática: a sobrevivência deixou de ser uma anomalia para se tornar a norma, revelando o impacto dos primeiros avanços médicos.</p>
+            <div class="bg-white/50 rounded-lg shadow-lg p-4 md:p-6">
+                <div class="chart-container">
+                    <canvas id="mortalityChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="legacy" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">O Legado da Cura</h2>
+             <p class="text-center text-gray-600 mb-10 max-w-3xl mx-auto">O sacrifício individual não foi em vão. Ele pavimentou o caminho para um legado institucional. A vulnerabilidade dos primeiros missionários inspirou e deu origem a um movimento de medicina missionária que estabeleceu hospitais e escolas, formando a base dos sistemas de saúde em muitas nações.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+                <div id="legacy-pioneers">
+                </div>
+            </div>
+        </section>
+
+        <section id="faith" class="scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">A Força da Fé</h2>
+            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Qual era a fonte de sua resiliência? Uma teologia forjada na aflição, que via o sofrimento não como um fim, mas como um meio de glorificar a Deus e servir à humanidade. A dor não diminuía sua fé; ela a aprofundava.</p>
+            <div id="faith-quotes" class="space-y-8 max-w-3xl mx-auto">
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-6 mt-12 border-t border-gray-300">
+        <p class="text-sm text-gray-500">Uma visualização interativa baseada no relatório "A Coroa do Sacrifício".</p>
+    </footer>
+
+    <div id="modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
+        <div id="modal-content" class="modal-content bg-[#F8F4E3] rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95">
+            <div class="sticky top-0 bg-[#F8F4E3] p-4 flex justify-between items-center border-b border-gray-300">
+                <h3 id="modal-title" class="text-2xl font-bold text-[#8B4513]"></h3>
+                <button id="modal-close" class="text-3xl text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <div id="modal-body" class="p-6 text-gray-700">
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const appData = {
+        profiles: [
+            {
+                id: 'brainerd',
+                name: 'David Brainerd',
+                lifespan: '1718-1747',
+                title: 'O Arquétipo do Sacrifício',
+                image: 'https://placehold.co/400x300/D2B48C/333333?text=Brainerd',
+                summary: 'Sua vida curta e ministério intenso entre os nativos americanos, imortalizados em seu diário, tornaram-se o modelo do missionário abnegado.',
+                details: `
+                    <p class="mb-4"><strong>Ministério:</strong> De 1743 a 1747, trabalhou entre os Delaware, onde seu ministério resultou em um notável avivamento espiritual. Apesar de expulso de Yale, seu zelo o levou ao campo missionário, onde também estabeleceu escolas.</p>
+                    <p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de tuberculose (consumption) desde jovem. As condições brutais da vida na fronteira — viagens exaustivas, má alimentação e exposição ao clima — agravaram fatalmente sua doença. Faleceu aos 29 anos.</p>
+                    <p class="mb-4"><strong>Sofrimento Psicológico:</strong> Lutou contra uma profunda melancolia e depressão, que ele distinguia de suas lutas espirituais. Seus diários revelam uma honestidade brutal sobre sua dor interna.</p>
+                    <p><strong>Legado:</strong> Seu diário, editado e publicado por Jonathan Edwards, tornou-se um dos livros mais influentes da literatura evangélica, inspirando gerações de missionários, incluindo Henry Martyn e William Carey.</p>
+                `
+            },
+            {
+                id: 'spurgeon',
+                name: 'Charles Spurgeon',
+                lifespan: '1834-1892',
+                title: 'O Púlpito e a Dor',
+                image: 'https://placehold.co/400x300/A0522D/FFFFFF?text=Spurgeon',
+                summary: 'Conhecido como o "Príncipe dos Pregadores", seu ministério fenomenal em Londres escondia uma batalha constante contra a dor física e a angústia mental.',
+                details: `
+                    <p class="mb-4"><strong>Ministério:</strong> Pastor do Tabernáculo Metropolitano, seus sermões alcançaram uma audiência global. Fundou um colégio para pastores, um orfanato e inúmeras obras de caridade, deixando um vasto legado literário.</p>
+                    <p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de gota severa, reumatismo e da doença de Bright (nefrite). A dor crônica o forçava a longas ausências do púlpito, buscando alívio no sul da França, onde faleceu aos 57 anos.</p>
+                    <p class="mb-4"><strong>Sofrimento Psicológico:</strong> Seu sofrimento foi agravado por três fardos: o trauma de um desastre em um culto que matou 7 pessoas, a depressão paralisante e o estresse da "Controvérsia do Down-Grade", que o deixou isolado.</p>
+                    <p><strong>Legado:</strong> Sua capacidade de pregar sobre a graça de Deus em meio ao seu próprio sofrimento deu ao seu ministério uma autoridade e autenticidade que ressoam até hoje, tornando-o um "pastor para os aflitos".</p>
+                `
+            },
+            {
+                id: 'martyn',
+                name: 'Henry Martyn',
+                lifespan: '1781-1812',
+                title: 'A Chama que se Consome',
+                image: 'https://placehold.co/400x300/BDB76B/333333?text=Martyn',
+                summary: 'Inspirado por Brainerd, este brilhante acadêmico de Cambridge trocou a fama por uma vida de serviço, traduzindo as Escrituras e morrendo jovem e sozinho.',
+                details: `
+                    <p class="mb-4"><strong>Ministério:</strong> Como capelão na Índia, seu maior feito foi a tradução pioneira do Novo Testamento para o Urdu, Persa e Árabe, abrindo caminho para futuras missões entre muçulmanos.</p>
+                    <p class="mb-4"><strong>Desafios de Saúde:</strong> Diagnosticado com tuberculose, seu trabalho incessante e os climas hostis da Índia e da Pérsia minaram sua saúde frágil. Morreu aos 31 anos na Turquia, durante uma árdua jornada de volta para casa.</p>
+                    <p class="mb-4"><strong>Isolamento:</strong> Sua vida foi marcada por uma profunda solidão, intensificada pela recusa de sua amada em acompanhá-lo e pela natureza solitária de seu trabalho de tradução.</p>
+                    <p><strong>Legado:</strong> Personificou o ideal do missionário erudito que se "esgota por Deus", deixando um trabalho de tradução fundamental e um exemplo de sacrifício que continuou a inspirar outros.</p>
+                `
+            },
+            {
+                id: 'slessor',
+                name: 'Mary Slessor',
+                lifespan: '1848-1915',
+                title: 'A Mãe de Calabar',
+                image: 'https://placehold.co/400x300/8FBC8F/333333?text=Slessor',
+                summary: 'Uma missionária escocesa da classe trabalhadora que, com coragem indomável, combateu a malária e tradições desumanas na Nigéria.',
+                details: `
+                    <p class="mb-4"><strong>Ministério:</strong> Imergiu na cultura local de Calabar, aprendeu a língua e viveu entre o povo. É célebre por lutar contra o infanticídio de gêmeos, resgatando e criando muitas crianças. Atuou como juíza e pacificadora para as tribos locais.</p>
+                    <p class="mb-4"><strong>Desafios de Saúde:</strong> A região era um foco de malária, que ela contraiu cedo. Sofreu de febres intermitentes por 40 anos, mas recusou-se a deixar seu posto. Morreu aos 67 anos, debilitada pelas doenças tropicais.</p>
+                    <p class="mb-4"><strong>Impacto Social:</strong> Além do trabalho evangelístico, foi uma verdadeira agente de saúde pública e mudança social, estabelecendo dispensários e escolas e desafiando práticas culturais prejudiciais.</p>
+                    <p><strong>Legado:</strong> Conhecida como "Ma" (Mãe), seu exemplo de imersão cultural e defesa corajosa dos vulneráveis tornou-se um modelo para o serviço missionário holístico.</p>
+                `
+            }
+        ],
+        contextTabs: [
+            {
+                id: 'tuberculosis',
+                label: 'Tuberculose',
+                content: `
+                    <h4 class="text-xl font-bold mb-2 text-[#8B4513]">A Peste Branca</h4>
+                    <p>Principal causa de morte na Europa e América, a tuberculose (ou "consumption") ceifou as vidas de Brainerd e Martyn. A doença era mal compreendida, inicialmente romantizada e depois vista como um mal social ligado à pobreza. A crença de que era hereditária era comum, pois se espalhava facilmente em lares aglomerados. O tratamento era o "regime higieno-dietético": repouso e ar fresco em sanatórios, que eram mais centros de isolamento do que de cura, com taxas de mortalidade de até 75%. Terapias agressivas como sangrias e o colapso deliberado de um pulmão eram comuns e frequentemente prejudiciais.</p>
+                `
+            },
+            {
+                id: 'malaria',
+                label: 'Malária e Febres',
+                content: `
+                    <h4 class="text-xl font-bold mb-2 text-[#8B4513]">O Mau Ar</h4>
+                    <p>Em regiões tropicais como a África de Mary Slessor, a malária era a maior ameaça. Acreditava-se que era causada por "mau ar" (mal'aria) de pântanos. A verdadeira causa (o parasita Plasmodium) e seu vetor (o mosquito Anopheles) só foram descobertos no final do século XIX. A confusão diagnóstica era a norma, com termos como "febres tifo-maláricas" sendo usados para descrever uma gama de doenças. O único tratamento eficaz era o quinino, mas era altamente tóxico e a resistência ao medicamento era um problema constante.</p>
+                `
+            },
+            {
+                id: 'treatments',
+                label: 'Medicina da Impotência',
+                content: `
+                    <h4 class="text-xl font-bold mb-2 text-[#8B4513]">Curar ou Prejudicar?</h4>
+                    <p>A prática médica da época era baseada em teorias humorais antigas. Terapias agressivas como sangrias, purgas e eméticos eram aplicadas para quase todas as doenças, com o objetivo de "reequilibrar os humores". Essas práticas frequentemente enfraqueciam ainda mais os pacientes. A falta de uma teoria dos germes significava que conceitos básicos de higiene e esterilização eram inexistentes. O arsenal terapêutico era limitado e, muitas vezes, os tratamentos eram ineficazes ou ativamente prejudiciais, tornando a jornada do doente uma experiência de incerteza e sofrimento adicionais.</p>
+                `
+            }
+        ],
+        legacy: [
+            {
+                name: 'Ida S. Scudder',
+                lifespan: '1870-1960',
+                contribution: 'Após testemunhar a morte de três mulheres em trabalho de parto na Índia, tornou-se médica e fundou um pequeno dispensário que cresceu para se tornar o Christian Medical College & Hospital (CMC) em Vellore, hoje uma das instituições médicas mais prestigiadas da Índia.'
+            },
+            {
+                name: 'Albert Schweitzer',
+                lifespan: '1875-1965',
+                contribution: 'Um renomado teólogo e músico europeu que, aos 30 anos, estudou medicina para servir na África. Fundou um hospital em Lambaréné (Gabão) a partir de um galinheiro, que se tornou um centro vital para o tratamento da lepra e um símbolo global do serviço humanitário.'
+            }
+        ],
+        faith: [
+            {
+                quote: 'Oh! quando o tempo dará lugar à eternidade?',
+                author: 'Henry Martyn',
+                context: 'Em sua última anotação no diário, expressando seu anseio pela libertação do sofrimento e sua esperança celestial.'
+            },
+            {
+                quote: 'Meu trabalho está feito.',
+                author: 'Charles Spurgeon',
+                context: 'Palavras ditas ao seu secretário pouco antes de morrer, refletindo a aceitação do fim de uma vida de serviço e dor.'
+            },
+            {
+                quote: 'Desejo esgotar-me por Deus.',
+                author: 'Henry Martyn',
+                context: 'Uma frase que encapsula sua teologia do sacrifício total, vendo a vida não como algo a ser preservado, mas a ser gasto para a glória de Deus.'
+            }
+        ],
+        chartData: {
+            labels: ['Doença (pessoal/família)', 'Morte (pessoal/família)', 'Aposentadoria/Idade', 'Dificuldade de Temperamento', 'Casamento', 'Outras Causas'],
+            datasets: [
+                {
+                    label: 'Início do Século XX (1900-1928)',
+                    data: [31, 15, 8, 6, 6, 15],
+                    backgroundColor: '#8B4513',
+                    borderColor: '#6F3810',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Século XIX (Estimativa Qualitativa)',
+                    data: [80, 15, 1, 1, 1, 2],
+                    backgroundColor: '#BDB76B',
+                    borderColor: '#A09A50',
+                    borderWidth: 1
+                }
+            ]
+        }
+    };
+
+    const profilesGrid = document.getElementById('profiles-grid');
+    appData.profiles.forEach(profile => {
+        const card = document.createElement('div');
+        card.className = 'card bg-white/50 rounded-lg shadow-md overflow-hidden cursor-pointer';
+        card.innerHTML = `
+            <img src="${profile.image}" alt="${profile.name}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Imagem+Indispon%C3%ADvel';">
+            <div class="p-4">
+                <h3 class="text-xl font-bold text-[#8B4513]">${profile.name}</h3>
+                <p class="text-sm text-gray-500 mb-2">${profile.lifespan}</p>
+                <p class="text-gray-700">${profile.summary}</p>
+            </div>
+        `;
+        card.addEventListener('click', () => openModal(profile));
+        profilesGrid.appendChild(card);
+    });
+
+    const modal = document.getElementById('modal');
+    const modalContent = document.getElementById('modal-content');
+    const modalTitle = document.getElementById('modal-title');
+    const modalBody = document.getElementById('modal-body');
+    const modalClose = document.getElementById('modal-close');
+
+    function openModal(profile) {
+        modalTitle.textContent = profile.name;
+        modalBody.innerHTML = profile.details;
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modalContent.classList.remove('scale-95');
+    }
+
+    function closeModal() {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        modalContent.classList.add('scale-95');
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    const tabsButtons = document.getElementById('tabs-buttons');
+    const tabsContent = document.getElementById('tabs-content');
+    appData.contextTabs.forEach((tab, index) => {
+        const button = document.createElement('button');
+        button.className = 'flex-1 py-3 px-2 text-center font-semibold text-gray-600 hover:bg-white/60 transition-colors';
+        button.textContent = tab.label;
+        if (index === 0) {
+            button.classList.add('text-[#8B4513]', 'bg-white/50');
+            tabsContent.innerHTML = tab.content;
+        }
+        button.addEventListener('click', () => {
+            tabsButtons.querySelectorAll('button').forEach(btn => {
+                btn.classList.remove('text-[#8B4513]', 'bg-white/50');
+            });
+            button.classList.add('text-[#8B4513]', 'bg-white/50');
+            tabsContent.innerHTML = tab.content;
+        });
+        tabsButtons.appendChild(button);
+    });
+
+    const legacyPioneers = document.getElementById('legacy-pioneers');
+    appData.legacy.forEach(pioneer => {
+        const div = document.createElement('div');
+        div.className = 'bg-white/50 p-6 rounded-lg shadow';
+        div.innerHTML = `
+            <h4 class="text-xl font-bold text-[#8B4513]">${pioneer.name}</h4>
+            <p class="text-sm text-gray-500 mb-2">${pioneer.lifespan}</p>
+            <p class="text-gray-700">${pioneer.contribution}</p>
+        `;
+        legacyPioneers.appendChild(div);
+    });
+
+    const faithQuotes = document.getElementById('faith-quotes');
+    appData.faith.forEach(item => {
+        const block = document.createElement('blockquote');
+        block.className = 'bg-white/50 p-6 rounded-lg shadow text-center';
+        block.innerHTML = `
+            <p class="text-xl italic text-gray-800">"${item.quote}"</p>
+            <footer class="mt-4">
+                <cite class="font-bold not-italic text-[#8B4513]">${item.author}</cite>
+                <p class="text-sm text-gray-500 mt-1">${item.context}</p>
+            </footer>
+        `;
+        faithQuotes.appendChild(block);
+    });
+
+    const ctx = document.getElementById('mortalityChart').getContext('2d');
+    const mortalityChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: appData.chartData.labels,
+            datasets: appData.chartData.datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Causas de Retirada de Missionários (%)',
+                    font: { size: 16, family: 'Lora' },
+                    color: '#333333'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                label += context.parsed.y + '%';
+                            }
+                            return label;
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Porcentagem de Casos'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        }
+                    }
+                },
+                x: {
+                    ticks: {
+                        callback: function(value) {
+                            const label = this.getLabelForValue(value);
+                            return label.length > 15 ? label.substring(0, 15) + '...' : label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+    
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section[id]');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 60) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active');
+            }
+        });
+    });
+});
+</script>
+
+</body>
+</html>
