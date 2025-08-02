@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutral (Background: #F8F4E3 - Papel Antigo, Text: #333333 - Tinta Escura, Primary Accent: #8B4513 - Couro, Secondary Accent: #BDB76B - Oliva Escuro) -->
-    <!-- Application Structure Plan: A thematic, single-page application designed for non-linear exploration. The structure includes: 1) A Hero section for introduction. 2) An interactive "Profiles" section with clickable cards to reveal detailed biographies, making personal stories engaging. 3) A "Hostile World" section with tabs to explain the medical context without overwhelming the user. 4) A "Turning Tide" data visualization section with a Chart.js bar chart to highlight the key quantitative finding—the shift in missionary mortality causes. 5) A "Legacy of Healing" section to show the evolution towards institutional medicine. 6) A "Faith" section with quotes to provide spiritual context. This structure was chosen to transform a dense report into a digestible, user-driven narrative, allowing users to explore topics of interest in any order via a sticky navigation bar, which is superior for usability compared to a linear document format. -->
-    <!-- Visualization & Content Choices: 1) Missionary Biographies -> Goal: Compare/Inform -> Method: Interactive Cards (HTML/CSS/JS) -> Interaction: Click to reveal modal with details -> Justification: Breaks down long text, focuses user attention. 2) Medical Context -> Goal: Inform -> Method: Tabbed Interface (HTML/CSS/JS) -> Interaction: Click to switch content -> Justification: Organizes complex information into clear, thematic chunks. 3) Mortality Data (Table 1) -> Goal: Compare/Change -> Method: Bar Chart (Chart.js/Canvas) -> Interaction: Hover for tooltips with exact data -> Justification: A bar chart is the most effective way to visually compare categorical data between two periods, making the report's core quantitative insight immediately apparent and impactful. 4) Legacy Evolution -> Goal: Show Process -> Method: Vertical Timeline (HTML/Tailwind) -> Interaction: Subtle hover effects -> Justification: Clearly illustrates the chronological progression from sacrifice to institutional legacy. -->
+    <!-- Application Structure Plan: A thematic, single-page application designed for non-linear exploration. The structure includes: 1) A Hero section for introduction. 2) An interactive "Profiles" section with a grid of clickable cards to reveal detailed biographies in a modal, making personal stories engaging and digestible. 3) A "Hostile World" section with tabs to explain the medical context without overwhelming the user. 4) A "Turning Tide" data visualization section with a Chart.js bar chart to highlight the key quantitative finding—the shift in missionary mortality causes. 5) A "Legacy of Healing" section to showcase the evolution towards institutional medicine. 6) A "Faith" section with styled blockquotes to provide spiritual context. This structure was chosen to transform a dense report into a user-driven narrative, allowing users to explore topics of interest in any order via a sticky navigation bar, which is superior for usability compared to a linear document format. -->
+    <!-- Visualization & Content Choices: 1) Missionary Biographies -> Goal: Compare/Inform -> Method: Interactive Cards (HTML/CSS/JS) with modal pop-up -> Interaction: Click card to reveal details -> Justification: Breaks down long text, focuses user attention, highly engaging. 2) Medical Context -> Goal: Inform/Organize -> Method: Tabbed Interface (HTML/CSS/JS) -> Interaction: Click tab to switch content -> Justification: Organizes complex information into clear, thematic chunks. 3) Mortality Data -> Goal: Compare/Change -> Method: Bar Chart (Chart.js/Canvas) -> Interaction: Hover for tooltips with exact data -> Justification: A bar chart is the most effective way to visually compare categorical data between two periods, making the report's core quantitative insight immediately apparent. 4) Legacy Evolution -> Goal: Show Process -> Method: Styled content cards (HTML/Tailwind) -> Interaction: Static display -> Justification: Clearly illustrates the chronological progression from individual sacrifice to institutional legacy. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -52,6 +52,19 @@
             height: 300px;
             max-height: 400px;
         }
+        .lang-btn {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+            font-size: 1.5rem;
+        }
+        .lang-btn:hover {
+            opacity: 1;
+        }
+        .lang-btn.active {
+            opacity: 1;
+            transform: scale(1.1);
+        }
         @media (min-width: 768px) {
             .chart-container {
                 height: 400px;
@@ -62,34 +75,34 @@
 <body class="bg-[#F8F4E3] text-gray-800">
 
     <header class="bg-[#F8F4E3]/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-3">
-            <ul class="flex justify-center space-x-4 md:space-x-8 text-sm md:text-base">
-                <li><a href="#profiles" class="nav-link font-semibold pb-1">Perfis</a></li>
-                <li><a href="#context" class="nav-link font-semibold pb-1">Contexto</a></li>
-                <li><a href="#data" class="nav-link font-semibold pb-1">Dados</a></li>
-                <li><a href="#legacy" class="nav-link font-semibold pb-1">Legado</a></li>
-                <li><a href="#faith" class="nav-link font-semibold pb-1">Fé</a></li>
+        <nav class="container mx-auto px-6 py-3 flex justify-center items-center relative">
+            <ul id="nav-menu" class="flex justify-center space-x-4 md:space-x-8 text-sm md:text-base">
             </ul>
+            <div id="lang-selector" class="absolute right-6 flex space-x-3">
+                <button class="lang-btn" data-lang="pt-BR">🇧🇷</button>
+                <button class="lang-btn" data-lang="en">🇬🇧</button>
+                <button class="lang-btn" data-lang="es">🇪🇸</button>
+            </div>
         </nav>
     </header>
 
     <main class="container mx-auto px-6 py-8 md:py-12">
 
         <section id="hero" class="text-center mb-16">
-            <h1 class="text-4xl md:text-6xl font-bold text-[#8B4513] mb-4">A Coroa do Sacrifício</h1>
-            <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-700">Uma exploração interativa da fé, enfermidade e o legado dos missionários que enfrentaram um mundo hostil, transformando seu sofrimento em um catalisador para a medicina moderna.</p>
+            <h1 id="hero-title" class="text-4xl md:text-6xl font-bold text-[#8B4513] mb-4"></h1>
+            <p id="hero-subtitle" class="text-lg md:text-xl max-w-3xl mx-auto text-gray-700"></p>
         </section>
 
         <section id="profiles" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">Perfis de Sacrifício</h2>
-            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Clique em um perfil para descobrir a história de fé e fragilidade por trás de cada figura. Suas vidas, marcadas pela dor, tornaram-se um testemunho de perseverança e inspiração.</p>
-            <div id="profiles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <h2 id="profiles-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
+            <p id="profiles-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
+            <div id="profiles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             </div>
         </section>
 
         <section id="context" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">Um Mundo Hostil</h2>
-            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Explore o cenário médico dos séculos XVIII e XIX. A medicina era uma prática de impotência, onde doenças hoje tratáveis eram sentenças de morte e os tratamentos, muitas vezes, mais prejudiciais que a própria enfermidade.</p>
+            <h2 id="context-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
+            <p id="context-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
             <div class="max-w-3xl mx-auto bg-white/50 rounded-lg shadow-lg p-1">
                 <div id="tabs-buttons" class="flex border-b border-gray-300">
                 </div>
@@ -99,8 +112,8 @@
         </section>
 
         <section id="data" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">A Virada da Maré</h2>
-            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Este gráfico compara as razões pelas quais os missionários deixaram o campo no século XIX versus o início do século XX. Observe a mudança dramática: a sobrevivência deixou de ser uma anomalia para se tornar a norma, revelando o impacto dos primeiros avanços médicos.</p>
+            <h2 id="data-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
+            <p id="data-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
             <div class="bg-white/50 rounded-lg shadow-lg p-4 md:p-6">
                 <div class="chart-container">
                     <canvas id="mortalityChart"></canvas>
@@ -109,17 +122,17 @@
         </section>
 
         <section id="legacy" class="mb-16 scroll-mt-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">O Legado da Cura</h2>
-             <p class="text-center text-gray-600 mb-10 max-w-3xl mx-auto">O sacrifício individual não foi em vão. Ele pavimentou o caminho para um legado institucional. A vulnerabilidade dos primeiros missionários inspirou e deu origem a um movimento de medicina missionária que estabeleceu hospitais e escolas, formando a base dos sistemas de saúde em muitas nações.</p>
+            <h2 id="legacy-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
+             <p id="legacy-subtitle" class="text-center text-gray-600 mb-10 max-w-3xl mx-auto"></p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl mx-auto">
-                <div id="legacy-pioneers">
+                <div id="legacy-pioneers" class="space-y-8">
                 </div>
             </div>
         </section>
 
         <section id="faith" class="scroll-mt-20">
-            <h2 class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]">A Força da Fé</h2>
-            <p class="text-center text-gray-600 mb-10 max-w-2xl mx-auto">Qual era a fonte de sua resiliência? Uma teologia forjada na aflição, que via o sofrimento não como um fim, mas como um meio de glorificar a Deus e servir à humanidade. A dor não diminuía sua fé; ela a aprofundava.</p>
+            <h2 id="faith-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
+            <p id="faith-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
             <div id="faith-quotes" class="space-y-8 max-w-3xl mx-auto">
             </div>
         </section>
@@ -127,7 +140,7 @@
     </main>
 
     <footer class="text-center py-6 mt-12 border-t border-gray-300">
-        <p class="text-sm text-gray-500">Uma visualização interativa baseada no relatório "A Coroa do Sacrifício".</p>
+        <p id="footer-text" class="text-sm text-gray-500"></p>
     </footer>
 
     <div id="modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
@@ -143,156 +156,235 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const languageContent = {
+        'pt-BR': {
+            nav: {
+                profiles: 'Perfis',
+                context: 'Contexto',
+                data: 'Dados',
+                legacy: 'Legado',
+                faith: 'Fé'
+            },
+            hero: {
+                title: 'A Coroa do Sacrifício',
+                subtitle: 'Uma exploração interativa da fé, enfermidade e o legado dos missionários que enfrentaram um mundo hostil, transformando seu sofrimento em um catalisador para a medicina moderna.'
+            },
+            profiles: {
+                title: 'Perfis de Sacrifício',
+                subtitle: 'Clique em um perfil para descobrir a história de fé e fragilidade por trás de cada figura. Suas vidas, marcadas pela dor, tornaram-se um testemunho de perseverança e inspiração.'
+            },
+            context: {
+                title: 'Um Mundo Hostil',
+                subtitle: 'Explore o cenário médico dos séculos XVIII e XIX. A medicina era uma prática de impotência, onde doenças hoje tratáveis eram sentenças de morte e os tratamentos, muitas vezes, mais prejudiciais que a própria enfermidade.'
+            },
+            data: {
+                title: 'A Virada da Maré',
+                subtitle: 'Este gráfico compara as razões pelas quais os missionários deixaram o campo no século XIX versus o início do século XX. Observe a mudança dramática: a sobrevivência deixou de ser uma anomalia para se tornar a norma, revelando o impacto dos primeiros avanços médicos.'
+            },
+            legacy: {
+                title: 'O Legado da Cura',
+                subtitle: 'O sacrifício individual não foi em vão. Ele pavimentou o caminho para um legado institucional. A vulnerabilidade dos primeiros missionários inspirou e deu origem a um movimento de medicina missionária que estabeleceu hospitais e escolas, formando a base dos sistemas de saúde em muitas nações.'
+            },
+            faith: {
+                title: 'A Força da Fé',
+                subtitle: 'Qual era a fonte de sua resiliência? Uma teologia forjada na aflição, que via o sofrimento não como um fim, mas como um meio de glorificar a Deus e servir à humanidade. A dor não diminuía sua fé; ela a aprofundava.'
+            },
+            footer: {
+                text: 'Uma visualização interativa baseada no relatório "A Coroa do Sacrifício".'
+            },
+            chart: {
+                title: 'Causas de Retirada de Missionários (%)',
+                yAxis: 'Porcentagem de Casos',
+                dataset1: 'Início do Século XX (1900-1928)',
+                dataset2: 'Século XIX (Estimativa Qualitativa)',
+                labels: ['Doença (pessoal/família)', 'Morte (pessoal/família)', 'Aposentadoria/Idade', 'Dificuldade de Temperamento', 'Casamento', 'Outras Causas']
+            }
+        },
+        'en': {
+            nav: {
+                profiles: 'Profiles',
+                context: 'Context',
+                data: 'Data',
+                legacy: 'Legacy',
+                faith: 'Faith'
+            },
+            hero: {
+                title: 'The Crown of Sacrifice',
+                subtitle: 'An interactive exploration of faith, illness, and the legacy of missionaries who faced a hostile world, turning their suffering into a catalyst for modern medicine.'
+            },
+            profiles: {
+                title: 'Profiles of Sacrifice',
+                subtitle: 'Click on a profile to discover the story of faith and fragility behind each figure. Their lives, marked by pain, became a testimony of perseverance and inspiration.'
+            },
+            context: {
+                title: 'A Hostile World',
+                subtitle: 'Explore the medical landscape of the 18th and 19th centuries. Medicine was a practice of impotence, where now-treatable diseases were death sentences, and treatments were often more harmful than the illness itself.'
+            },
+            data: {
+                title: 'The Turning Tide',
+                subtitle: 'This chart compares the reasons missionaries left the field in the 19th century versus the early 20th century. Note the dramatic shift: survival ceased to be an anomaly and became the norm, revealing the impact of early medical advances.'
+            },
+            legacy: {
+                title: 'The Legacy of Healing',
+                subtitle: 'Individual sacrifice was not in vain. It paved the way for an institutional legacy. The vulnerability of the first missionaries inspired and gave rise to a medical mission movement that established hospitals and schools, forming the basis of healthcare systems in many nations.'
+            },
+            faith: {
+                title: 'The Strength of Faith',
+                subtitle: 'What was the source of their resilience? A theology forged in affliction, which saw suffering not as an end, but as a means to glorify God and serve humanity. Pain did not diminish their faith; it deepened it.'
+            },
+            footer: {
+                text: 'An interactive visualization based on the "Crown of Sacrifice" report.'
+            },
+            chart: {
+                title: 'Causes of Missionary Withdrawal (%)',
+                yAxis: 'Percentage of Cases',
+                dataset1: 'Early 20th Century (1900-1928)',
+                dataset2: '19th Century (Qualitative Estimate)',
+                labels: ['Illness (self/family)', 'Death (self/family)', 'Retirement/Age', 'Temperament Difficulty', 'Marriage', 'Other Causes']
+            }
+        },
+        'es': {
+            nav: {
+                profiles: 'Perfiles',
+                context: 'Contexto',
+                data: 'Datos',
+                legacy: 'Legado',
+                faith: 'Fe'
+            },
+            hero: {
+                title: 'La Corona del Sacrificio',
+                subtitle: 'Una exploración interactiva de la fe, la enfermedad y el legado de los misioneros que se enfrentaron a un mundo hostil, convirtiendo su sufrimiento en un catalizador para la medicina moderna.'
+            },
+            profiles: {
+                title: 'Perfiles de Sacrificio',
+                subtitle: 'Haz clic en un perfil para descubrir la historia de fe y fragilidad detrás de cada figura. Sus vidas, marcadas por el dolor, se convirtieron en un testimonio de perseverancia e inspiración.'
+            },
+            context: {
+                title: 'Un Mundo Hostil',
+                subtitle: 'Explora el panorama médico de los siglos XVIII y XIX. La medicina era una práctica de impotencia, donde enfermedades hoy tratables eran sentencias de muerte y los tratamientos, a menudo, más perjudiciales que la propia enfermedad.'
+            },
+            data: {
+                title: 'El Cambio de Marea',
+                subtitle: 'Este gráfico compara las razones por las que los misioneros abandonaron el campo en el siglo XIX frente a principios del siglo XX. Observa el cambio dramático: la supervivencia dejó de ser una anomalía para convertirse en la norma, revelando el impacto de los primeros avances médicos.'
+            },
+            legacy: {
+                title: 'El Legado de Sanación',
+                subtitle: 'El sacrificio individual no fue en vano. Allanó el camino para un legado institucional. La vulnerabilidad de los primeros misioneros inspiró y dio lugar a un movimiento de medicina misionera que estableció hospitales y escuelas, formando la base de los sistemas de salud en muchas naciones.'
+            },
+            faith: {
+                title: 'La Fuerza de la Fe',
+                subtitle: '¿Cuál era la fuente de su resiliencia? Una teología forjada en la aflicción, que veía el sufrimiento no como un fin, sino como un medio para glorificar a Dios y servir a la humanidad. El dolor no disminuyó su fe; la profundizó.'
+            },
+            footer: {
+                text: 'Una visualización interactiva basada en el informe "La Corona del Sacrificio".'
+            },
+            chart: {
+                title: 'Causas de Retiro de Misioneros (%)',
+                yAxis: 'Porcentaje de Casos',
+                dataset1: 'Principios del Siglo XX (1900-1928)',
+                dataset2: 'Siglo XIX (Estimación Cualitativa)',
+                labels: ['Enfermedad (personal/familiar)', 'Muerte (personal/familiar)', 'Jubilación/Edad', 'Dificultad de Temperamento', 'Matrimonio', 'Otras Causas']
+            }
+        }
+    };
+
     const appData = {
         profiles: [
             {
-                id: 'brainerd',
-                name: 'David Brainerd',
-                lifespan: '1718-1747',
-                title: 'O Arquétipo do Sacrifício',
-                image: 'https://placehold.co/400x300/D2B48C/333333?text=Brainerd',
-                summary: 'Sua vida curta e ministério intenso entre os nativos americanos, imortalizados em seu diário, tornaram-se o modelo do missionário abnegado.',
-                details: `
-                    <p class="mb-4"><strong>Ministério:</strong> De 1743 a 1747, trabalhou entre os Delaware, onde seu ministério resultou em um notável avivamento espiritual. Apesar de expulso de Yale, seu zelo o levou ao campo missionário, onde também estabeleceu escolas.</p>
-                    <p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de tuberculose (consumption) desde jovem. As condições brutais da vida na fronteira — viagens exaustivas, má alimentação e exposição ao clima — agravaram fatalmente sua doença. Faleceu aos 29 anos.</p>
-                    <p class="mb-4"><strong>Sofrimento Psicológico:</strong> Lutou contra uma profunda melancolia e depressão, que ele distinguia de suas lutas espirituais. Seus diários revelam uma honestidade brutal sobre sua dor interna.</p>
-                    <p><strong>Legado:</strong> Seu diário, editado e publicado por Jonathan Edwards, tornou-se um dos livros mais influentes da literatura evangélica, inspirando gerações de missionários, incluindo Henry Martyn e William Carey.</p>
-                `
+                id: 'brainerd', lifespan: '1718-1747', image: 'https://placehold.co/400x300/D2B48C/333333?text=Brainerd',
+                'pt-BR': { name: 'David Brainerd', summary: 'Sua vida curta e ministério intenso entre os nativos americanos, imortalizados em seu diário, tornaram-se o modelo do missionário abnegado.', details: `<p class="mb-4"><strong>Ministério:</strong> De 1743 a 1747, trabalhou entre os índios Delaware. Apesar de expulso de Yale, seu zelo o levou ao campo missionário, onde seu ministério resultou em um notável avivamento espiritual.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de tuberculose ("consumption") desde jovem. As condições brutais da vida na fronteira — viagens exaustivas, má alimentação e exposição ao clima — agravaram fatalmente sua doença. Faleceu aos 29 anos na casa de Jonathan Edwards.</p><p class="mb-4"><strong>Sofrimento Psicológico:</strong> Lutou contra uma profunda melancolia e depressão, que ele distinguia de suas lutas espirituais. Seus diários revelam uma honestidade brutal sobre sua dor interna.</p><p><strong>Legado:</strong> Seu diário, editado por Jonathan Edwards, tornou-se um dos livros mais influentes da literatura evangélica, inspirando gerações de missionários, incluindo Henry Martyn e William Carey.</p>` },
+                'en': { name: 'David Brainerd', summary: 'His short life and intense ministry among Native Americans, immortalized in his diary, became the model of the selfless missionary.', details: `<p class="mb-4"><strong>Ministry:</strong> From 1743 to 1747, he worked among the Delaware Indians. Despite being expelled from Yale, his zeal led him to the mission field, where his ministry resulted in a notable spiritual revival.</p><p class="mb-4"><strong>Health Challenges:</strong> He suffered from tuberculosis ("consumption") from a young age. The brutal conditions of frontier life—exhausting journeys, poor diet, and exposure to the elements—fatally aggravated his illness. He died at age 29 at the home of Jonathan Edwards.</p><p class="mb-4"><strong>Psychological Suffering:</strong> He battled deep melancholy and depression, which he distinguished from his spiritual struggles. His diaries reveal a brutal honesty about his internal pain.</p><p><strong>Legacy:</strong> His diary, edited by Jonathan Edwards, became one of the most influential books in evangelical literature, inspiring generations of missionaries, including Henry Martyn and William Carey.</p>` },
+                'es': { name: 'David Brainerd', summary: 'Su corta vida e intenso ministerio entre los nativos americanos, inmortalizados en su diario, se convirtieron en el modelo del misionero abnegado.', details: `<p class="mb-4"><strong>Ministerio:</strong> De 1743 a 1747, trabajó entre los indios Delaware. A pesar de ser expulsado de Yale, su celo lo llevó al campo misionero, donde su ministerio resultó en un notable avivamiento espiritual.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Sufrió de tuberculosis ("consunción") desde joven. Las brutales condiciones de la vida en la frontera —viajes agotadores, mala alimentación y exposición al clima— agravaron fatalmente su enfermedad. Falleció a los 29 años en casa de Jonathan Edwards.</p><p class="mb-4"><strong>Sufrimiento Psicológico:</strong> Luchó contra una profunda melancolía y depresión, que él distinguía de sus luchas espirituales. Sus diarios revelan una honestidad brutal sobre su dolor interno.</p><p><strong>Legado:</strong> Su diario, editado por Jonathan Edwards, se convirtió en uno de los libros más influyentes de la literatura evangélica, inspirando a generaciones de misioneros, como Henry Martyn y William Carey.</p>` }
             },
             {
-                id: 'spurgeon',
-                name: 'Charles Spurgeon',
-                lifespan: '1834-1892',
-                title: 'O Púlpito e a Dor',
-                image: 'https://placehold.co/400x300/A0522D/FFFFFF?text=Spurgeon',
-                summary: 'Conhecido como o "Príncipe dos Pregadores", seu ministério fenomenal em Londres escondia uma batalha constante contra a dor física e a angústia mental.',
-                details: `
-                    <p class="mb-4"><strong>Ministério:</strong> Pastor do Tabernáculo Metropolitano, seus sermões alcançaram uma audiência global. Fundou um colégio para pastores, um orfanato e inúmeras obras de caridade, deixando um vasto legado literário.</p>
-                    <p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de gota severa, reumatismo e da doença de Bright (nefrite). A dor crônica o forçava a longas ausências do púlpito, buscando alívio no sul da França, onde faleceu aos 57 anos.</p>
-                    <p class="mb-4"><strong>Sofrimento Psicológico:</strong> Seu sofrimento foi agravado por três fardos: o trauma de um desastre em um culto que matou 7 pessoas, a depressão paralisante e o estresse da "Controvérsia do Down-Grade", que o deixou isolado.</p>
-                    <p><strong>Legado:</strong> Sua capacidade de pregar sobre a graça de Deus em meio ao seu próprio sofrimento deu ao seu ministério uma autoridade e autenticidade que ressoam até hoje, tornando-o um "pastor para os aflitos".</p>
-                `
+                id: 'spurgeon', lifespan: '1834-1892', image: 'https://placehold.co/400x300/A0522D/FFFFFF?text=Spurgeon',
+                'pt-BR': { name: 'Charles Spurgeon', summary: 'Conhecido como o "Príncipe dos Pregadores", seu ministério fenomenal em Londres escondia uma batalha constante contra a dor física e a angústia mental.', details: `<p class="mb-4"><strong>Ministério:</strong> Pastor do Tabernáculo Metropolitano, seus sermões alcançaram uma audiência global. Fundou um colégio para pastores, um orfanato e inúmeras obras de caridade, deixando um vasto legado literário.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de gota severa, reumatismo e da doença de Bright (nefrite). A dor crônica o forçava a longas ausências do púlpito, buscando alívio no sul da França, onde faleceu aos 57 anos.</p><p class="mb-4"><strong>Sofrimento Psicológico:</strong> Seu sofrimento foi agravado por três fardos: o trauma de um desastre em um culto que matou 7 pessoas, a depressão paralisante e o estresse da "Controvérsia do Down-Grade", que o deixou isolado.</p><p><strong>Legado:</strong> Sua capacidade de pregar sobre a graça de Deus em meio ao seu próprio sofrimento deu ao seu ministério uma autoridade e autenticidade que ressoam até hoje, tornando-o um "pastor para os aflitos".</p>` },
+                'en': { name: 'Charles Spurgeon', summary: 'Known as the "Prince of Preachers," his phenomenal ministry in London concealed a constant battle with physical pain and mental anguish.', details: `<p class="mb-4"><strong>Ministry:</strong> Pastor of the Metropolitan Tabernacle, his sermons reached a global audience. He founded a pastors' college, an orphanage, and numerous charities, leaving a vast literary legacy.</p><p class="mb-4"><strong>Health Challenges:</strong> He suffered from severe gout, rheumatism, and Bright's disease (nephritis). Chronic pain forced him into long absences from the pulpit, seeking relief in the south of France, where he died at 57.</p><p class="mb-4"><strong>Psychological Suffering:</strong> His suffering was compounded by three burdens: the trauma of a disaster at a service that killed 7 people, paralyzing depression, and the stress of the "Down-Grade Controversy," which left him isolated.</p><p><strong>Legacy:</strong> His ability to preach about God's grace amidst his own suffering gave his ministry an authority and authenticity that resonates to this day, making him a "pastor to the afflicted."</p>` },
+                'es': { name: 'Charles Spurgeon', summary: 'Conocido como el "Príncipe de los Predicadores", su fenomenal ministerio en Londres ocultaba una batalla constante contra el dolor físico y la angustia mental.', details: `<p class="mb-4"><strong>Ministerio:</strong> Pastor del Tabernáculo Metropolitano, sus sermones alcanzaron una audiencia global. Fundó un colegio de pastores, un orfanato y numerosas obras de caridad, dejando un vasto legado literario.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Sufrió de gota severa, reumatismo y la enfermedad de Bright (nefritis). El dolor crónico lo forzó a largas ausencias del púlpito, buscando alivio en el sur de Francia, donde falleció a los 57 años.</p><p class="mb-4"><strong>Sufrimiento Psicológico:</strong> Su sufrimiento se vio agravado por tres cargas: el trauma de un desastre en un culto que mató a 7 personas, la depresión paralizante y el estrés de la "Controversia del Down-Grade", que lo dejó aislado.</p><p><strong>Legado:</strong> Su capacidad para predicar sobre la gracia de Dios en medio de su propio sufrimiento dio a su ministerio una autoridad y autenticidad que resuenan hasta hoy, convirtiéndolo en un "pastor para los afligidos".</p>` }
             },
             {
-                id: 'martyn',
-                name: 'Henry Martyn',
-                lifespan: '1781-1812',
-                title: 'A Chama que se Consome',
-                image: 'https://placehold.co/400x300/BDB76B/333333?text=Martyn',
-                summary: 'Inspirado por Brainerd, este brilhante acadêmico de Cambridge trocou a fama por uma vida de serviço, traduzindo as Escrituras e morrendo jovem e sozinho.',
-                details: `
-                    <p class="mb-4"><strong>Ministério:</strong> Como capelão na Índia, seu maior feito foi a tradução pioneira do Novo Testamento para o Urdu, Persa e Árabe, abrindo caminho para futuras missões entre muçulmanos.</p>
-                    <p class="mb-4"><strong>Desafios de Saúde:</strong> Diagnosticado com tuberculose, seu trabalho incessante e os climas hostis da Índia e da Pérsia minaram sua saúde frágil. Morreu aos 31 anos na Turquia, durante uma árdua jornada de volta para casa.</p>
-                    <p class="mb-4"><strong>Isolamento:</strong> Sua vida foi marcada por uma profunda solidão, intensificada pela recusa de sua amada em acompanhá-lo e pela natureza solitária de seu trabalho de tradução.</p>
-                    <p><strong>Legado:</strong> Personificou o ideal do missionário erudito que se "esgota por Deus", deixando um trabalho de tradução fundamental e um exemplo de sacrifício que continuou a inspirar outros.</p>
-                `
+                id: 'martyn', lifespan: '1781-1812', image: 'https://placehold.co/400x300/BDB76B/333333?text=Martyn',
+                'pt-BR': { name: 'Henry Martyn', summary: 'Inspirado por Brainerd, este brilhante acadêmico de Cambridge trocou a fama por uma vida de serviço, traduzindo as Escrituras e morrendo jovem e sozinho.', details: `<p class="mb-4"><strong>Ministério:</strong> Como capelão na Índia, seu maior feito foi a tradução pioneira do Novo Testamento para o Urdu, Persa e Árabe, abrindo caminho para futuras missões entre muçulmanos.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Diagnosticado com tuberculose, seu trabalho incessante e os climas hostis da Índia e da Pérsia minaram sua saúde frágil. Morreu aos 31 anos na Turquia, durante uma árdua jornada de volta para casa.</p><p class="mb-4"><strong>Isolamento:</strong> Sua vida foi marcada por uma profunda solidão, intensificada pela recusa de sua amada em acompanhá-lo e pela natureza solitária de seu trabalho de tradução.</p><p><strong>Legado:</strong> Personificou o ideal do missionário erudito que se "esgota por Deus", deixando um trabalho de tradução fundamental e um exemplo de sacrifício que continuou a inspirar outros.</p>` },
+                'en': { name: 'Henry Martyn', summary: 'Inspired by Brainerd, this brilliant Cambridge scholar traded fame for a life of service, translating the Scriptures and dying young and alone.', details: `<p class="mb-4"><strong>Ministry:</strong> As a chaplain in India, his greatest achievement was the pioneering translation of the New Testament into Urdu, Persian, and Arabic, paving the way for future missions among Muslims.</p><p class="mb-4"><strong>Health Challenges:</strong> Diagnosed with tuberculosis, his relentless work and the harsh climates of India and Persia undermined his fragile health. He died at 31 in Turkey during an arduous journey home.</p><p class="mb-4"><strong>Isolation:</strong> His life was marked by deep loneliness, intensified by his beloved's refusal to accompany him and the solitary nature of his translation work.</p><p><strong>Legacy:</strong> He personified the ideal of the scholar missionary who "burns out for God," leaving a foundational translation work and an example of sacrifice that continued to inspire others.</p>` },
+                'es': { name: 'Henry Martyn', summary: 'Inspirado por Brainerd, este brillante académico de Cambridge cambió la fama por una vida de servicio, traduciendo las Escrituras y muriendo joven y solo.', details: `<p class="mb-4"><strong>Ministerio:</strong> Como capellán en la India, su mayor logro fue la traducción pionera del Nuevo Testamento al urdu, persa y árabe, abriendo el camino para futuras misiones entre musulmanes.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Diagnosticado con tuberculosis, su trabajo incesante y los climas hostiles de la India y Persia minaron su frágil salud. Murió a los 31 años en Turquía, durante un arduo viaje de regreso a casa.</p><p class="mb-4"><strong>Aislamiento:</strong> Su vida estuvo marcada por una profunda soledad, intensificada por la negativa de su amada a acompañarlo y la naturaleza solitaria de su trabajo de traducción.</p><p><strong>Legado:</strong> Personificó el ideal del misionero erudito que se "consume por Dios", dejando un trabajo de traducción fundamental y un ejemplo de sacrificio que continuó inspirando a otros.</p>` }
             },
             {
-                id: 'slessor',
-                name: 'Mary Slessor',
-                lifespan: '1848-1915',
-                title: 'A Mãe de Calabar',
-                image: 'https://placehold.co/400x300/8FBC8F/333333?text=Slessor',
-                summary: 'Uma missionária escocesa da classe trabalhadora que, com coragem indomável, combateu a malária e tradições desumanas na Nigéria.',
-                details: `
-                    <p class="mb-4"><strong>Ministério:</strong> Imergiu na cultura local de Calabar, aprendeu a língua e viveu entre o povo. É célebre por lutar contra o infanticídio de gêmeos, resgatando e criando muitas crianças. Atuou como juíza e pacificadora para as tribos locais.</p>
-                    <p class="mb-4"><strong>Desafios de Saúde:</strong> A região era um foco de malária, que ela contraiu cedo. Sofreu de febres intermitentes por 40 anos, mas recusou-se a deixar seu posto. Morreu aos 67 anos, debilitada pelas doenças tropicais.</p>
-                    <p class="mb-4"><strong>Impacto Social:</strong> Além do trabalho evangelístico, foi uma verdadeira agente de saúde pública e mudança social, estabelecendo dispensários e escolas e desafiando práticas culturais prejudiciais.</p>
-                    <p><strong>Legado:</strong> Conhecida como "Ma" (Mãe), seu exemplo de imersão cultural e defesa corajosa dos vulneráveis tornou-se um modelo para o serviço missionário holístico.</p>
-                `
+                id: 'slessor', lifespan: '1848-1915', image: 'https://placehold.co/400x300/8FBC8F/333333?text=Slessor',
+                'pt-BR': { name: 'Mary Slessor', summary: 'Uma missionária escocesa da classe trabalhadora que, com coragem indomável, combateu a malária e tradições desumanas na Nigéria.', details: `<p class="mb-4"><strong>Ministério:</strong> Imergiu na cultura local de Calabar, aprendeu a língua e viveu entre o povo. É célebre por lutar contra o infanticídio de gêmeos, resgatando e criando muitas crianças. Atuou como juíza e pacificadora para as tribos locais.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> A região era um foco de malária, que ela contraiu cedo. Sofreu de febres intermitentes por quase 40 anos, mas recusou-se a deixar seu posto. Morreu aos 67 anos, debilitada pelas doenças tropicais.</p><p><strong>Legado:</strong> Conhecida como "Ma" (Mãe), seu exemplo de imersão cultural e defesa corajosa dos vulneráveis tornou-se um modelo para o serviço missionário holístico.</p>` },
+                'en': { name: 'Mary Slessor', summary: 'A Scottish working-class missionary who, with indomitable courage, fought malaria and inhumane traditions in Nigeria.', details: `<p class="mb-4"><strong>Ministry:</strong> She immersed herself in the local culture of Calabar, learned the language, and lived among the people. She is famous for fighting against the infanticide of twins, rescuing and raising many children. She served as a judge and peacemaker for local tribes.</p><p class="mb-4"><strong>Health Challenges:</strong> The region was a hotbed of malaria, which she contracted early. She suffered from intermittent fevers for nearly 40 years but refused to leave her post. She died at 67, weakened by tropical diseases.</p><p><strong>Legacy:</strong> Known as "Ma" (Mother), her example of cultural immersion and courageous defense of the vulnerable became a model for holistic missionary service.</p>` },
+                'es': { name: 'Mary Slessor', summary: 'Una misionera escocesa de clase trabajadora que, con un coraje indomable, combatió la malaria y las tradiciones inhumanas en Nigeria.', details: `<p class="mb-4"><strong>Ministerio:</strong> Se sumergió en la cultura local de Calabar, aprendió el idioma y vivió entre la gente. Es célebre por luchar contra el infanticidio de gemelos, rescatando y criando a muchos niños. Actuó como jueza y pacificadora para las tribus locales.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> La región era un foco de malaria, que contrajo tempranamente. Sufrió fiebres intermitentes durante casi 40 años, pero se negó a abandonar su puesto. Murió a los 67 años, debilitada por las enfermedades tropicales.</p><p><strong>Legado:</strong> Conocida como "Ma" (Madre), su ejemplo de inmersión cultural y valiente defensa de los vulnerables se convirtió en un modelo para el servicio misionero integral.</p>` }
+            },
+            {
+                id: 'judson', lifespan: '1788-1850', image: 'https://placehold.co/400x300/6B8E23/FFFFFF?text=Judson',
+                'pt-BR': { name: 'Adoniram Judson', summary: 'Pioneiro na Birmânia, traduziu a Bíblia e suportou prisão e perdas familiares, deixando um legado de perseverança e fé inabalável.', details: `<p class="mb-4"><strong>Ministério:</strong> Um dos primeiros missionários americanos, dedicou quase 40 anos à Birmânia (atual Mianmar). Seu maior legado é a tradução completa da Bíblia para o birmanês, além de compilar o primeiro dicionário birmanês-inglês.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de febres severas e esgotamento. Foi aprisionado por 21 meses em condições terríveis, o que debilitou permanentemente sua saúde. Perdeu duas esposas e várias filhas para doenças como febre e varíola. Morreu de febre aos 62 anos.</p><p><strong>Legado:</strong> Sua resiliência diante da perda e do sofrimento extremo, combinada com seu trabalho monumental de tradução, fez dele uma figura icônica que inspirou o movimento missionário americano do século XIX.</p>` },
+                'en': { name: 'Adoniram Judson', summary: 'A pioneer in Burma, he translated the Bible and endured imprisonment and family losses, leaving a legacy of perseverance and unwavering faith.', details: `<p class="mb-4"><strong>Ministry:</strong> One of the first American missionaries, he dedicated nearly 40 years to Burma (modern-day Myanmar). His greatest legacy is the complete translation of the Bible into Burmese, as well as compiling the first Burmese-English dictionary.</p><p class="mb-4"><strong>Health Challenges:</strong> He suffered from severe fevers and exhaustion. He was imprisoned for 21 months in terrible conditions, which permanently weakened his health. He lost two wives and several daughters to diseases like fever and smallpox. He died of a fever at age 62.</p><p><strong>Legacy:</strong> His resilience in the face of extreme loss and suffering, combined with his monumental translation work, made him an iconic figure who inspired the 19th-century American missionary movement.</p>` },
+                'es': { name: 'Adoniram Judson', summary: 'Pionero en Birmania, tradujo la Biblia y soportó la prisión y pérdidas familiares, dejando un legado de perseverancia y fe inquebrantable.', details: `<p class="mb-4"><strong>Ministerio:</strong> Uno de los primeros misioneros estadounidenses, dedicó casi 40 años a Birmania (actual Myanmar). Su mayor legado es la traducción completa de la Biblia al birmano, además de compilar el primer diccionario birmano-inglés.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Sufrió fiebres severas y agotamiento. Fue encarcelado durante 21 meses en condiciones terribles, lo que debilitó permanentemente su salud. Perdió a dos esposas y varias hijas por enfermedades como la fiebre y la viruela. Murió de fiebre a los 62 años.</p><p><strong>Legado:</strong> Su resiliencia ante la pérdida y el sufrimiento extremos, combinada con su monumental trabajo de traducción, lo convirtió en una figura icónica que inspiró el movimiento misionero estadounidense del siglo XIX.</p>` }
+            },
+            {
+                id: 'taylor', lifespan: '1832-1905', image: 'https://placehold.co/400x300/800000/FFFFFF?text=Taylor',
+                'pt-BR': { name: 'Hudson Taylor', summary: 'Fundador da Missão no Interior da China (CIM), revolucionou as missões com sua ênfase na contextualização cultural e na fé radical.', details: `<p class="mb-4"><strong>Ministério:</strong> Taylor fundou a CIM com o princípio de que os missionários deveriam adotar o vestuário e os costumes chineses. Ele enfatizava a dependência total de Deus para o sustento financeiro, sem apelos diretos por fundos.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sua saúde foi frágil durante toda a vida, sofrendo de problemas hepáticos e colapsos nervosos devido ao estresse. Uma queda em 1874 o deixou paralisado por meses. Perdeu sua primeira esposa e vários filhos para doenças.</p><p><strong>Legado:</strong> Sua visão para a CIM resultou no envio de centenas de missionários para o interior da China. Seu modelo de missão baseada na fé e na inculturação influenciou profundamente as estratégias missionárias modernas.</p>` },
+                'en': { name: 'Hudson Taylor', summary: 'Founder of the China Inland Mission (CIM), he revolutionized missions with his emphasis on cultural contextualization and radical faith.', details: `<p class="mb-4"><strong>Ministry:</strong> Taylor founded the CIM on the principle that missionaries should adopt Chinese dress and customs. He emphasized total reliance on God for financial support, with no direct appeals for funds.</p><p class="mb-4"><strong>Health Challenges:</strong> His health was fragile throughout his life, suffering from liver problems and nervous breakdowns due to stress. A fall in 1874 left him paralyzed for months. He lost his first wife and several children to illness.</p><p><strong>Legacy:</strong> His vision for the CIM resulted in hundreds of missionaries being sent to inland China. His model of faith-based and inculturated mission profoundly influenced modern missionary strategies.</p>` },
+                'es': { name: 'Hudson Taylor', summary: 'Fundador de la Misión al Interior de China (CIM), revolucionó las misiones con su énfasis en la contextualización cultural y la fe radical.', details: `<p class="mb-4"><strong>Ministerio:</strong> Taylor fundó la CIM con el principio de que los misioneros debían adoptar la vestimenta y las costumbres chinas. Enfatizaba la dependencia total de Dios para el sustento financiero, sin solicitar fondos directamente.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Su salud fue frágil durante toda su vida, sufriendo de problemas hepáticos y crisis nerviosas debido al estrés. Una caída en 1874 lo dejó paralizado durante meses. Perdió a su primera esposa y a varios hijos por enfermedades.</p><p><strong>Legado:</strong> Su visión para la CIM resultó en el envío de cientos de misioneros al interior de China. Su modelo de misión basado en la fe y la inculturación influyó profundamente en las estrategias misioneras modernas.</p>` }
             }
         ],
-        contextTabs: [
-            {
-                id: 'tuberculosis',
-                label: 'Tuberculose',
-                content: `
-                    <h4 class="text-xl font-bold mb-2 text-[#8B4513]">A Peste Branca</h4>
-                    <p>Principal causa de morte na Europa e América, a tuberculose (ou "consumption") ceifou as vidas de Brainerd e Martyn. A doença era mal compreendida, inicialmente romantizada e depois vista como um mal social ligado à pobreza. A crença de que era hereditária era comum, pois se espalhava facilmente em lares aglomerados. O tratamento era o "regime higieno-dietético": repouso e ar fresco em sanatórios, que eram mais centros de isolamento do que de cura, com taxas de mortalidade de até 75%. Terapias agressivas como sangrias e o colapso deliberado de um pulmão eram comuns e frequentemente prejudiciais.</p>
-                `
-            },
-            {
-                id: 'malaria',
-                label: 'Malária e Febres',
-                content: `
-                    <h4 class="text-xl font-bold mb-2 text-[#8B4513]">O Mau Ar</h4>
-                    <p>Em regiões tropicais como a África de Mary Slessor, a malária era a maior ameaça. Acreditava-se que era causada por "mau ar" (mal'aria) de pântanos. A verdadeira causa (o parasita Plasmodium) e seu vetor (o mosquito Anopheles) só foram descobertos no final do século XIX. A confusão diagnóstica era a norma, com termos como "febres tifo-maláricas" sendo usados para descrever uma gama de doenças. O único tratamento eficaz era o quinino, mas era altamente tóxico e a resistência ao medicamento era um problema constante.</p>
-                `
-            },
-            {
-                id: 'treatments',
-                label: 'Medicina da Impotência',
-                content: `
-                    <h4 class="text-xl font-bold mb-2 text-[#8B4513]">Curar ou Prejudicar?</h4>
-                    <p>A prática médica da época era baseada em teorias humorais antigas. Terapias agressivas como sangrias, purgas e eméticos eram aplicadas para quase todas as doenças, com o objetivo de "reequilibrar os humores". Essas práticas frequentemente enfraqueciam ainda mais os pacientes. A falta de uma teoria dos germes significava que conceitos básicos de higiene e esterilização eram inexistentes. O arsenal terapêutico era limitado e, muitas vezes, os tratamentos eram ineficazes ou ativamente prejudiciais, tornando a jornada do doente uma experiência de incerteza e sofrimento adicionais.</p>
-                `
-            }
-        ],
-        legacy: [
-            {
-                name: 'Ida S. Scudder',
-                lifespan: '1870-1960',
-                contribution: 'Após testemunhar a morte de três mulheres em trabalho de parto na Índia, tornou-se médica e fundou um pequeno dispensário que cresceu para se tornar o Christian Medical College & Hospital (CMC) em Vellore, hoje uma das instituições médicas mais prestigiadas da Índia.'
-            },
-            {
-                name: 'Albert Schweitzer',
-                lifespan: '1875-1965',
-                contribution: 'Um renomado teólogo e músico europeu que, aos 30 anos, estudou medicina para servir na África. Fundou um hospital em Lambaréné (Gabão) a partir de um galinheiro, que se tornou um centro vital para o tratamento da lepra e um símbolo global do serviço humanitário.'
-            }
-        ],
-        faith: [
-            {
-                quote: 'Oh! quando o tempo dará lugar à eternidade?',
-                author: 'Henry Martyn',
-                context: 'Em sua última anotação no diário, expressando seu anseio pela libertação do sofrimento e sua esperança celestial.'
-            },
-            {
-                quote: 'Meu trabalho está feito.',
-                author: 'Charles Spurgeon',
-                context: 'Palavras ditas ao seu secretário pouco antes de morrer, refletindo a aceitação do fim de uma vida de serviço e dor.'
-            },
-            {
-                quote: 'Desejo esgotar-me por Deus.',
-                author: 'Henry Martyn',
-                context: 'Uma frase que encapsula sua teologia do sacrifício total, vendo a vida não como algo a ser preservado, mas a ser gasto para a glória de Deus.'
-            }
-        ],
+        contextTabs: {
+            'pt-BR': [
+                { id: 'tuberculosis', label: 'Tuberculose', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">A Peste Branca</h4><p>Principal causa de morte na Europa e América, a tuberculose (ou "consumption") ceifou as vidas de Brainerd e Martyn. A doença era mal compreendida, frequentemente atribuída a uma constituição fraca ou predisposição hereditária. O tratamento padrão em sanatórios, que se popularizou no século XIX, baseava-se na crença de que ar fresco, repouso e uma dieta nutritiva poderiam curar a doença, mas as taxas de mortalidade permaneciam altíssimas.</p>` },
+                { id: 'malaria', label: 'Malária e Febres', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">O Mau Ar</h4><p>Em regiões tropicais, a malária era a maior ameaça. Acreditava-se que era causada por "mau ar" (mal'aria) de pântanos. A verdadeira causa (o parasita Plasmodium) e seu vetor (o mosquito Anopheles) só foram descobertos no final do século XIX. O único tratamento eficaz era o quinino, mas era altamente tóxico e a dosagem era imprecisa, causando efeitos colaterais severos.</p>` },
+                { id: 'treatments', label: 'Medicina da Impotência', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">Curar ou Prejudicar?</h4><p>A prática médica da época era baseada em teorias humorais antigas. Terapias agressivas como sangrias e purgas com eméticos eram aplicadas para quase todas as doenças, com o objetivo de "reequilibrar os humores". Essas práticas frequentemente enfraqueciam ainda mais os pacientes. A falta de uma teoria dos germes significava que conceitos básicos de higiene e esterilização eram inexistentes.</p>` }
+            ],
+            'en': [
+                { id: 'tuberculosis', label: 'Tuberculosis', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">The White Plague</h4><p>The leading cause of death in Europe and America, tuberculosis (or "consumption") claimed the lives of Brainerd and Martyn. The disease was poorly understood, often attributed to a weak constitution or hereditary predisposition. The standard treatment in sanatoriums, which became popular in the 19th century, was based on the belief that fresh air, rest, and a nutritious diet could cure the disease, but mortality rates remained extremely high.</p>` },
+                { id: 'malaria', label: 'Malaria & Fevers', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">The Bad Air</h4><p>In tropical regions, malaria was the greatest threat. It was believed to be caused by "bad air" (mal'aria) from swamps. The true cause (the Plasmodium parasite) and its vector (the Anopheles mosquito) were only discovered in the late 19th century. The only effective treatment was quinine, but it was highly toxic and dosage was imprecise, causing severe side effects.</p>` },
+                { id: 'treatments', label: 'Medicine of Impotence', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">To Cure or to Harm?</h4><p>Medical practice of the time was based on ancient humoral theories. Aggressive therapies like bloodletting and purges with emetics were applied to almost all diseases, aiming to "rebalance the humors." These practices often further weakened patients. The lack of a germ theory meant that basic concepts of hygiene and sterilization were non-existent.</p>` }
+            ],
+            'es': [
+                { id: 'tuberculosis', label: 'Tuberculosis', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">La Peste Blanca</h4><p>Principal causa de muerte en Europa y América, la tuberculosis (o "consunción") se cobró la vida de Brainerd y Martyn. La enfermedad era mal entendida, a menudo atribuida a una constitución débil o predisposición hereditaria. El tratamiento estándar en sanatorios, que se popularizó en el siglo XIX, se basaba en la creencia de que el aire fresco, el reposo y una dieta nutritiva podían curar la enfermedad, pero las tasas de mortalidad seguían siendo altísimas.</p>` },
+                { id: 'malaria', label: 'Malaria y Fiebres', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">El Mal Aire</h4><p>En las regiones tropicales, la malaria era la mayor amenaza. Se creía que era causada por "mal aire" (mal'aria) de los pantanos. La verdadera causa (el parásito Plasmodium) y su vector (el mosquito Anopheles) no se descubrieron hasta finales del siglo XIX. El único tratamiento eficaz era la quinina, pero era muy tóxica y la dosificación era imprecisa, causando graves efectos secundarios.</p>` },
+                { id: 'treatments', label: 'Medicina de la Impotencia', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">¿Curar o Dañar?</h4><p>La práctica médica de la época se basaba en antiguas teorías humorales. Terapias agresivas como sangrías y purgas con eméticos se aplicaban a casi todas las enfermedades, con el objetivo de "reequilibrar los humores". Estas prácticas a menudo debilitaban aún más a los pacientes. La falta de una teoría de los gérmenes significaba que los conceptos básicos de higiene y esterilización eran inexistentes.</p>` }
+            ]
+        },
+        legacy: {
+            'pt-BR': [
+                { name: 'Ida S. Scudder', lifespan: '1870-1960', contribution: 'Após testemunhar a morte de três mulheres em trabalho de parto na Índia, tornou-se médica e fundou um pequeno dispensário que cresceu para se tornar o Christian Medical College & Hospital (CMC) em Vellore, hoje uma das instituições médicas mais prestigiadas da Índia.' },
+                { name: 'Albert Schweitzer', lifespan: '1875-1965', contribution: 'Um renomado teólogo e músico europeu que, aos 30 anos, estudou medicina para servir na África. Fundou um hospital em Lambaréné (Gabão) a partir de um galinheiro, que se tornou um centro vital para o tratamento da lepra e um símbolo global do serviço humanitário.' }
+            ],
+            'en': [
+                { name: 'Ida S. Scudder', lifespan: '1870-1960', contribution: 'After witnessing the death of three women in childbirth in India, she became a doctor and founded a small dispensary that grew into the Christian Medical College & Hospital (CMC) in Vellore, now one of the most prestigious medical institutions in India.' },
+                { name: 'Albert Schweitzer', lifespan: '1875-1965', contribution: 'A renowned European theologian and musician who, at age 30, studied medicine to serve in Africa. He founded a hospital in Lambaréné (Gabon) from a chicken coop, which became a vital center for leprosy treatment and a global symbol of humanitarian service.' }
+            ],
+            'es': [
+                { name: 'Ida S. Scudder', lifespan: '1870-1960', contribution: 'Tras presenciar la muerte de tres mujeres en el parto en la India, se hizo médica y fundó un pequeño dispensario que se convirtió en el Christian Medical College & Hospital (CMC) en Vellore, hoy una de las instituciones médicas más prestigiosas de la India.' },
+                { name: 'Albert Schweitzer', lifespan: '1875-1965', contribution: 'Un renombrado teólogo y músico europeo que, a los 30 años, estudió medicina para servir en África. Fundó un hospital en Lambaréné (Gabón) a partir de un gallinero, que se convirtió en un centro vital para el tratamiento de la lepra y un símbolo mundial del servicio humanitario.' }
+            ]
+        },
+        faith: {
+            'pt-BR': [
+                { quote: 'Oh! quando o tempo dará lugar à eternidade?', author: 'Henry Martyn', context: 'Em sua última anotação no diário, expressando seu anseio pela libertação do sofrimento e sua esperança celestial.' },
+                { quote: 'Meu trabalho está feito.', author: 'Charles Spurgeon', context: 'Palavras ditas ao seu secretário pouco antes de morrer, refletindo a aceitação do fim de uma vida de serviço e dor.' },
+                { quote: 'Desejo esgotar-me por Deus.', author: 'Henry Martyn', context: 'Uma frase que encapsula sua teologia do sacrifício total, vendo a vida não como algo a ser preservado, mas a ser gasto para a glória de Deus.' }
+            ],
+            'en': [
+                { quote: 'Oh! when will time give place to eternity?', author: 'Henry Martyn', context: 'In his last diary entry, expressing his longing for release from suffering and his heavenly hope.' },
+                { quote: 'My work is done.', author: 'Charles Spurgeon', context: 'Words spoken to his secretary shortly before his death, reflecting acceptance of the end of a life of service and pain.' },
+                { quote: 'Let me burn out for God.', author: 'Henry Martyn', context: 'A phrase that encapsulates his theology of total sacrifice, seeing life not as something to be preserved, but to be spent for the glory of God.' }
+            ],
+            'es': [
+                { quote: '¡Oh! ¿cuándo el tiempo dará paso a la eternidad?', author: 'Henry Martyn', context: 'En su última entrada del diario, expresando su anhelo de liberación del sufrimiento y su esperanza celestial.' },
+                { quote: 'Mi trabajo está hecho.', author: 'Charles Spurgeon', context: 'Palabras dichas a su secretario poco antes de morir, reflejando la aceptación del final de una vida de servicio y dolor.' },
+                { quote: 'Deseo consumirme por Dios.', author: 'Henry Martyn', context: 'Una frase que encapsula su teología del sacrificio total, viendo la vida no como algo a preservar, sino para ser gastada para la gloria de Dios.' }
+            ]
+        },
         chartData: {
-            labels: ['Doença (pessoal/família)', 'Morte (pessoal/família)', 'Aposentadoria/Idade', 'Dificuldade de Temperamento', 'Casamento', 'Outras Causas'],
             datasets: [
-                {
-                    label: 'Início do Século XX (1900-1928)',
-                    data: [31, 15, 8, 6, 6, 15],
-                    backgroundColor: '#8B4513',
-                    borderColor: '#6F3810',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Século XIX (Estimativa Qualitativa)',
-                    data: [80, 15, 1, 1, 1, 2],
-                    backgroundColor: '#BDB76B',
-                    borderColor: '#A09A50',
-                    borderWidth: 1
-                }
+                { data: [31, 15, 8, 6, 6, 15], backgroundColor: '#8B4513', borderColor: '#6F3810', borderWidth: 1 },
+                { data: [80, 15, 1, 1, 1, 2], backgroundColor: '#BDB76B', borderColor: '#A09A50', borderWidth: 1 }
             ]
         }
     };
 
-    const profilesGrid = document.getElementById('profiles-grid');
-    appData.profiles.forEach(profile => {
-        const card = document.createElement('div');
-        card.className = 'card bg-white/50 rounded-lg shadow-md overflow-hidden cursor-pointer';
-        card.innerHTML = `
-            <img src="${profile.image}" alt="${profile.name}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Imagem+Indispon%C3%ADvel';">
-            <div class="p-4">
-                <h3 class="text-xl font-bold text-[#8B4513]">${profile.name}</h3>
-                <p class="text-sm text-gray-500 mb-2">${profile.lifespan}</p>
-                <p class="text-gray-700">${profile.summary}</p>
-            </div>
-        `;
-        card.addEventListener('click', () => openModal(profile));
-        profilesGrid.appendChild(card);
-    });
+    let currentLanguage = 'pt-BR';
+    let mortalityChart;
 
     const modal = document.getElementById('modal');
     const modalContent = document.getElementById('modal-content');
@@ -301,8 +393,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalClose = document.getElementById('modal-close');
 
     function openModal(profile) {
-        modalTitle.textContent = profile.name;
-        modalBody.innerHTML = profile.details;
+        modalTitle.textContent = profile[currentLanguage].name;
+        modalBody.innerHTML = profile[currentLanguage].details;
         modal.classList.remove('opacity-0', 'pointer-events-none');
         modalContent.classList.remove('scale-95');
     }
@@ -319,120 +411,183 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    const tabsButtons = document.getElementById('tabs-buttons');
-    const tabsContent = document.getElementById('tabs-content');
-    appData.contextTabs.forEach((tab, index) => {
-        const button = document.createElement('button');
-        button.className = 'flex-1 py-3 px-2 text-center font-semibold text-gray-600 hover:bg-white/60 transition-colors';
-        button.textContent = tab.label;
-        if (index === 0) {
-            button.classList.add('text-[#8B4513]', 'bg-white/50');
-            tabsContent.innerHTML = tab.content;
-        }
-        button.addEventListener('click', () => {
-            tabsButtons.querySelectorAll('button').forEach(btn => {
-                btn.classList.remove('text-[#8B4513]', 'bg-white/50');
-            });
-            button.classList.add('text-[#8B4513]', 'bg-white/50');
-            tabsContent.innerHTML = tab.content;
+    function renderContent(lang) {
+        currentLanguage = lang;
+        const content = languageContent[lang];
+
+        // Update Nav
+        const navMenu = document.getElementById('nav-menu');
+        navMenu.innerHTML = `
+            <li><a href="#profiles" class="nav-link font-semibold pb-1">${content.nav.profiles}</a></li>
+            <li><a href="#context" class="nav-link font-semibold pb-1">${content.nav.context}</a></li>
+            <li><a href="#data" class="nav-link font-semibold pb-1">${content.nav.data}</a></li>
+            <li><a href="#legacy" class="nav-link font-semibold pb-1">${content.nav.legacy}</a></li>
+            <li><a href="#faith" class="nav-link font-semibold pb-1">${content.nav.faith}</a></li>
+        `;
+
+        // Update static text
+        document.getElementById('hero-title').textContent = content.hero.title;
+        document.getElementById('hero-subtitle').textContent = content.hero.subtitle;
+        document.getElementById('profiles-title').textContent = content.profiles.title;
+        document.getElementById('profiles-subtitle').textContent = content.profiles.subtitle;
+        document.getElementById('context-title').textContent = content.context.title;
+        document.getElementById('context-subtitle').textContent = content.context.subtitle;
+        document.getElementById('data-title').textContent = content.data.title;
+        document.getElementById('data-subtitle').textContent = content.data.subtitle;
+        document.getElementById('legacy-title').textContent = content.legacy.title;
+        document.getElementById('legacy-subtitle').textContent = content.legacy.subtitle;
+        document.getElementById('faith-title').textContent = content.faith.title;
+        document.getElementById('faith-subtitle').textContent = content.faith.subtitle;
+        document.getElementById('footer-text').textContent = content.footer.text;
+
+        // Render dynamic content
+        renderProfiles(lang);
+        renderContextTabs(lang);
+        renderLegacy(lang);
+        renderFaith(lang);
+        updateChart(lang);
+
+        // Update active language button
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
         });
-        tabsButtons.appendChild(button);
-    });
+    }
 
-    const legacyPioneers = document.getElementById('legacy-pioneers');
-    appData.legacy.forEach(pioneer => {
-        const div = document.createElement('div');
-        div.className = 'bg-white/50 p-6 rounded-lg shadow';
-        div.innerHTML = `
-            <h4 class="text-xl font-bold text-[#8B4513]">${pioneer.name}</h4>
-            <p class="text-sm text-gray-500 mb-2">${pioneer.lifespan}</p>
-            <p class="text-gray-700">${pioneer.contribution}</p>
-        `;
-        legacyPioneers.appendChild(div);
-    });
+    function renderProfiles(lang) {
+        const profilesGrid = document.getElementById('profiles-grid');
+        profilesGrid.innerHTML = '';
+        appData.profiles.forEach(profile => {
+            const profileLang = profile[lang];
+            const card = document.createElement('div');
+            card.className = 'card bg-white/50 rounded-lg shadow-md overflow-hidden cursor-pointer';
+            card.innerHTML = `
+                <img src="${profile.image}" alt="${profileLang.name}" class="w-full h-48 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x300/cccccc/ffffff?text=Image+Unavailable';">
+                <div class="p-4">
+                    <h3 class="text-xl font-bold text-[#8B4513]">${profileLang.name}</h3>
+                    <p class="text-sm text-gray-500 mb-2">${profile.lifespan}</p>
+                    <p class="text-gray-700">${profileLang.summary}</p>
+                </div>
+            `;
+            card.addEventListener('click', () => openModal(profile));
+            profilesGrid.appendChild(card);
+        });
+    }
 
-    const faithQuotes = document.getElementById('faith-quotes');
-    appData.faith.forEach(item => {
-        const block = document.createElement('blockquote');
-        block.className = 'bg-white/50 p-6 rounded-lg shadow text-center';
-        block.innerHTML = `
-            <p class="text-xl italic text-gray-800">"${item.quote}"</p>
-            <footer class="mt-4">
-                <cite class="font-bold not-italic text-[#8B4513]">${item.author}</cite>
-                <p class="text-sm text-gray-500 mt-1">${item.context}</p>
-            </footer>
-        `;
-        faithQuotes.appendChild(block);
-    });
+    function renderContextTabs(lang) {
+        const tabsButtons = document.getElementById('tabs-buttons');
+        const tabsContent = document.getElementById('tabs-content');
+        tabsButtons.innerHTML = '';
+        const tabsData = appData.contextTabs[lang];
+        
+        tabsData.forEach((tab, index) => {
+            const button = document.createElement('button');
+            button.className = 'flex-1 py-3 px-2 text-center font-semibold text-gray-600 hover:bg-white/60 transition-colors rounded-t-lg';
+            button.textContent = tab.label;
+            if (index === 0) {
+                button.classList.add('text-[#8B4513]', 'bg-white/50');
+                tabsContent.innerHTML = tab.content;
+            }
+            button.addEventListener('click', () => {
+                tabsButtons.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('text-[#8B4513]', 'bg-white/50');
+                });
+                button.classList.add('text-[#8B4513]', 'bg-white/50');
+                tabsContent.innerHTML = tab.content;
+            });
+            tabsButtons.appendChild(button);
+        });
+    }
 
-    const ctx = document.getElementById('mortalityChart').getContext('2d');
-    const mortalityChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: appData.chartData.labels,
-            datasets: appData.chartData.datasets
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Causas de Retirada de Missionários (%)',
-                    font: { size: 16, family: 'Lora' },
-                    color: '#333333'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.y !== null) {
-                                label += context.parsed.y + '%';
-                            }
-                            return label;
-                        }
-                    }
-                },
-                legend: {
-                    position: 'bottom'
-                }
+    function renderLegacy(lang) {
+        const legacyPioneers = document.getElementById('legacy-pioneers');
+        legacyPioneers.innerHTML = '';
+        appData.legacy[lang].forEach(pioneer => {
+            const div = document.createElement('div');
+            div.className = 'bg-white/50 p-6 rounded-lg shadow';
+            div.innerHTML = `
+                <h4 class="text-xl font-bold text-[#8B4513]">${pioneer.name}</h4>
+                <p class="text-sm text-gray-500 mb-2">${pioneer.lifespan}</p>
+                <p class="text-gray-700">${pioneer.contribution}</p>
+            `;
+            legacyPioneers.appendChild(div);
+        });
+    }
+    
+    function renderFaith(lang) {
+        const faithQuotes = document.getElementById('faith-quotes');
+        faithQuotes.innerHTML = '';
+        appData.faith[lang].forEach(item => {
+            const block = document.createElement('blockquote');
+            block.className = 'bg-white/50 p-6 rounded-lg shadow text-center';
+            block.innerHTML = `
+                <p class="text-xl italic text-gray-800">"${item.quote}"</p>
+                <footer class="mt-4">
+                    <cite class="font-bold not-italic text-[#8B4513]">${item.author}</cite>
+                    <p class="text-sm text-gray-500 mt-1">${item.context}</p>
+                </footer>
+            `;
+            faithQuotes.appendChild(block);
+        });
+    }
+
+    function updateChart(lang) {
+        if (mortalityChart) {
+            mortalityChart.destroy();
+        }
+        const chartLang = languageContent[lang].chart;
+        const ctx = document.getElementById('mortalityChart').getContext('2d');
+        mortalityChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartLang.labels,
+                datasets: [
+                    { ...appData.chartData.datasets[0], label: chartLang.dataset1 },
+                    { ...appData.chartData.datasets[1], label: chartLang.dataset2 }
+                ]
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: {
-                        display: true,
-                        text: 'Porcentagem de Casos'
-                    },
-                    ticks: {
-                        callback: function(value) {
-                            return value + '%';
-                        }
-                    }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: true, text: chartLang.title, font: { size: 16, family: 'Lora' }, color: '#333333' },
+                    tooltip: { callbacks: { label: (context) => `${context.dataset.label || ''}: ${context.parsed.y !== null ? context.parsed.y + '%' : ''}` } },
+                    legend: { position: 'bottom' }
                 },
-                x: {
-                    ticks: {
-                        callback: function(value) {
-                            const label = this.getLabelForValue(value);
-                            return label.length > 15 ? label.substring(0, 15) + '...' : label;
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: chartLang.yAxis },
+                        ticks: { callback: (value) => value + '%' }
+                    },
+                    x: {
+                        ticks: {
+                            callback: function(value) {
+                                const label = this.getLabelForValue(value);
+                                return label.length > 15 ? label.substring(0, 15) + '...' : label;
+                            }
                         }
                     }
                 }
             }
+        });
+    }
+    
+    document.getElementById('lang-selector').addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            const lang = e.target.dataset.lang;
+            if (lang) {
+                renderContent(lang);
+            }
         }
     });
-    
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = document.querySelectorAll('section[id]');
 
     window.addEventListener('scroll', () => {
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
         let current = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            if (pageYOffset >= sectionTop - 60) {
+            if (pageYOffset >= sectionTop - 70) {
                 current = section.getAttribute('id');
             }
         });
@@ -444,6 +599,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+
+    // Initial render
+    renderContent(currentLanguage);
 });
 </script>
 
