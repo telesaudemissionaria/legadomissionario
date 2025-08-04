@@ -581,27 +581,41 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    window.addEventListener('scroll', () => {
+    // ===================================================================
+    // MELHORIA: Lógica de navegação ativa
+    // ===================================================================
+    function updateActiveNav() {
+        let current = '';
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.nav-link');
-        let current = '';
+
+        // Encontra a seção atual na visualização
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            if (pageYOffset >= sectionTop - 70) {
+            if (pageYOffset >= sectionTop - 70) { // 70px de offset para o cabeçalho
                 current = section.getAttribute('id');
             }
         });
 
+        // Atualiza os links de navegação
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href').includes(current)) {
+            // Um link está ativo se sua seção for a atual.
+            // OU, se a seção atual for 'hero' (ou nenhuma encontrada, ou seja, no topo), o primeiro link ('profiles') deve estar ativo.
+            if (link.getAttribute('href') === `#${current}` || ((current === 'hero' || current === '') && link.getAttribute('href') === '#profiles')) {
                 link.classList.add('active');
             }
         });
-    });
+    }
 
-    // Initial render
+    // Renderização inicial
     renderContent(currentLanguage);
+
+    // Chama a função de navegação uma vez no carregamento para definir o estado inicial
+    updateActiveNav();
+    
+    // Adiciona o listener para o evento de rolagem
+    window.addEventListener('scroll', updateActiveNav);
 });
 </script>
 
