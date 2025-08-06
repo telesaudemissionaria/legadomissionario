@@ -10,9 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Warm Neutral (Background: #F8F4E3 - Papel Antigo, Text: #333333 - Tinta Escura, Primary Accent: #8B4513 - Couro, Secondary Accent: #BDB76B - Oliva Escuro) -->
-    <!-- Application Structure Plan: A thematic, single-page application designed for non-linear exploration. The structure includes: 1) A Hero section for introduction. 2) An interactive "Profiles" section with a grid of clickable cards to reveal detailed biographies in a modal, making personal stories engaging and digestible. 3) A "Hostile World" section with tabs to explain the medical context without overwhelming the user. 4) A "Turning Tide" data visualization section with a Chart.js bar chart to highlight the key quantitative finding—the shift in missionary mortality causes. 5) A "Legacy of Healing" section to showcase the evolution towards institutional medicine. 6) A "Faith" section with styled blockquotes to provide spiritual context. This structure was chosen to transform a dense report into a user-driven narrative, allowing users to explore topics of interest in any order via a sticky navigation bar, which is superior for usability compared to a linear document format. -->
-    <!-- Visualization & Content Choices: 1) Missionary Biographies -> Goal: Compare/Inform -> Method: Interactive Cards (HTML/CSS/JS) with modal pop-up -> Interaction: Click card to reveal details -> Justification: Breaks down long text, focuses user attention, highly engaging. 2) Medical Context -> Goal: Inform/Organize -> Method: Tabbed Interface (HTML/CSS/JS) -> Interaction: Click tab to switch content -> Justification: Organizes complex information into clear, thematic chunks. 3) Mortality Data -> Goal: Compare/Change -> Method: Bar Chart (Chart.js/Canvas) -> Interaction: Hover for tooltips with exact data -> Justification: A bar chart is the most effective way to visually compare categorical data between two periods, making the report's core quantitative insight immediately apparent. 4) Legacy Evolution -> Goal: Show Process -> Method: Styled content cards (HTML/Tailwind) -> Interaction: Static display -> Justification: Clearly illustrates the chronological progression from individual sacrifice to institutional legacy. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Source Sans 3', sans-serif;
@@ -43,15 +40,6 @@
         .modal-content {
             transition: transform 0.3s ease-in-out;
         }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
         .lang-btn {
             cursor: pointer;
             opacity: 0.6;
@@ -65,18 +53,23 @@
             opacity: 1;
             transform: scale(1.1);
         }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px;
-            }
+        .gallery-item {
+            transition: transform 0.3s;
+        }
+        .gallery-item:hover {
+            transform: scale(1.03);
         }
     </style>
 </head>
 <body class="bg-[#F8F4E3] text-gray-800">
-
     <header class="bg-[#F8F4E3]/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
         <nav class="container mx-auto px-6 py-3 flex justify-center items-center relative">
-            <ul id="nav-menu" class="flex justify-center space-x-4 md:space-x-8 text-sm md:text-base">
+            <ul id="nav-menu" class="flex flex-wrap justify-center space-x-4 md:space-x-8 text-sm md:text-base">
+                <li><a href="#profiles" class="nav-link font-semibold pb-1">Perfis</a></li>
+                <li><a href="#context" class="nav-link font-semibold pb-1">Contexto</a></li>
+                <li><a href="#gallery" class="nav-link font-semibold pb-1">Galeria</a></li>
+                <li><a href="#legacy" class="nav-link font-semibold pb-1">Legado</a></li>
+                <li><a href="#faith" class="nav-link font-semibold pb-1">Fé</a></li>
             </ul>
             <div id="lang-selector" class="absolute right-6 flex space-x-3">
                 <button class="lang-btn" data-lang="pt-BR">🇧🇷</button>
@@ -85,21 +78,19 @@
             </div>
         </nav>
     </header>
-
     <main class="container mx-auto px-6 py-8 md:py-12">
-
-        <section id="hero" class="text-center mb-16">
+        <section id="hero" class="text-center mb-16 p-8 bg-amber-50/50 border-2 border-[#8B4513]/30 rounded-lg shadow-lg">
             <h1 id="hero-title" class="text-4xl md:text-6xl font-bold text-[#8B4513] mb-4"></h1>
             <p id="hero-subtitle" class="text-lg md:text-xl max-w-3xl mx-auto text-gray-700"></p>
         </section>
-
+        
         <section id="profiles" class="mb-16 scroll-mt-20">
             <h2 id="profiles-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
             <p id="profiles-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
             <div id="profiles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             </div>
         </section>
-
+        
         <section id="context" class="mb-16 scroll-mt-20">
             <h2 id="context-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
             <p id="context-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
@@ -110,17 +101,15 @@
                 </div>
             </div>
         </section>
-
-        <section id="data" class="mb-16 scroll-mt-20">
-            <h2 id="data-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
-            <p id="data-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
-            <div class="bg-white/50 rounded-lg shadow-lg p-4 md:p-6">
-                <div class="chart-container">
-                    <canvas id="mortalityChart"></canvas>
-                </div>
+        
+        <section id="gallery" class="mb-16 scroll-mt-20">
+            <h2 id="gallery-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
+            <p id="gallery-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
+            <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Galerias serão inseridas aqui -->
             </div>
         </section>
-
+        
         <section id="legacy" class="mb-16 scroll-mt-20">
             <h2 id="legacy-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
              <p id="legacy-subtitle" class="text-center text-gray-600 mb-10 max-w-3xl mx-auto"></p>
@@ -129,20 +118,17 @@
                 </div>
             </div>
         </section>
-
+        
         <section id="faith" class="scroll-mt-20">
             <h2 id="faith-title" class="text-3xl md:text-4xl font-bold text-center mb-2 text-[#8B4513]"></h2>
             <p id="faith-subtitle" class="text-center text-gray-600 mb-10 max-w-2xl mx-auto"></p>
             <div id="faith-quotes" class="space-y-8 max-w-3xl mx-auto">
             </div>
         </section>
-
     </main>
-
     <footer class="text-center py-6 mt-12 border-t border-gray-300">
         <p id="footer-text" class="text-sm text-gray-500"></p>
     </footer>
-
     <div id="modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
         <div id="modal-content" class="modal-content bg-[#F8F4E3] rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95">
             <div class="sticky top-0 bg-[#F8F4E3] p-4 flex justify-between items-center border-b border-gray-300">
@@ -153,7 +139,6 @@
             </div>
         </div>
     </div>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const languageContent = {
@@ -161,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
             nav: {
                 profiles: 'Perfis',
                 context: 'Contexto',
-                data: 'Dados',
+                gallery: 'Galeria',
                 legacy: 'Legado',
                 faith: 'Fé'
             },
@@ -177,9 +162,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 title: 'Um Mundo Hostil',
                 subtitle: 'Explore o cenário médico dos séculos XVIII e XIX. A medicina era uma prática de impotência, onde doenças hoje tratáveis eram sentenças de morte e os tratamentos, muitas vezes, mais prejudiciais que a própria enfermidade.'
             },
-            data: {
-                title: 'A Virada da Maré',
-                subtitle: 'Este gráfico compara as razões pelas quais os missionários deixaram o campo no século XIX versus o início do século XX. Observe a mudança dramática: a sobrevivência deixou de ser uma anomalia para se tornar a norma, revelando o impacto dos primeiros avanços médicos.'
+            gallery: {
+                title: 'Galeria Histórica',
+                subtitle: 'Imagens que documentam a vida e o trabalho dos missionários ao longo dos séculos.'
             },
             legacy: {
                 title: 'O Legado da Cura',
@@ -191,20 +176,13 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             footer: {
                 text: 'Uma visualização interativa baseada no relatório "A Coroa do Sacrifício".'
-            },
-            chart: {
-                title: 'Causas de Retirada de Missionários (%)',
-                yAxis: 'Porcentagem de Casos',
-                dataset1: 'Início do Século XX (1900-1928)',
-                dataset2: 'Século XIX (Estimativa Qualitativa)',
-                labels: ['Doença (pessoal/família)', 'Morte (pessoal/família)', 'Aposentadoria/Idade', 'Dificuldade de Temperamento', 'Casamento', 'Outras Causas']
             }
         },
         'en': {
             nav: {
                 profiles: 'Profiles',
                 context: 'Context',
-                data: 'Data',
+                gallery: 'Gallery',
                 legacy: 'Legacy',
                 faith: 'Faith'
             },
@@ -220,9 +198,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 title: 'A Hostile World',
                 subtitle: 'Explore the medical landscape of the 18th and 19th centuries. Medicine was a practice of impotence, where now-treatable diseases were death sentences, and treatments were often more harmful than the illness itself.'
             },
-            data: {
-                title: 'The Turning Tide',
-                subtitle: 'This chart compares the reasons missionaries left the field in the 19th century versus the early 20th century. Note the dramatic shift: survival ceased to be an anomaly and became the norm, revealing the impact of early medical advances.'
+            gallery: {
+                title: 'Historical Gallery',
+                subtitle: 'Images documenting the life and work of missionaries over the centuries.'
             },
             legacy: {
                 title: 'The Legacy of Healing',
@@ -234,20 +212,13 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             footer: {
                 text: 'An interactive visualization based on the "Crown of Sacrifice" report.'
-            },
-            chart: {
-                title: 'Causes of Missionary Withdrawal (%)',
-                yAxis: 'Percentage of Cases',
-                dataset1: 'Early 20th Century (1900-1928)',
-                dataset2: '19th Century (Qualitative Estimate)',
-                labels: ['Illness (self/family)', 'Death (self/family)', 'Retirement/Age', 'Temperament Difficulty', 'Marriage', 'Other Causes']
             }
         },
         'es': {
             nav: {
                 profiles: 'Perfiles',
                 context: 'Contexto',
-                data: 'Datos',
+                gallery: 'Galería',
                 legacy: 'Legado',
                 faith: 'Fe'
             },
@@ -263,9 +234,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 title: 'Un Mundo Hostil',
                 subtitle: 'Explora el panorama médico de los siglos XVIII y XIX. La medicina era una práctica de impotencia, donde enfermedades hoy tratables eran sentencias de muerte y los tratamientos, a menudo, más perjudiciales que la propia enfermedad.'
             },
-            data: {
-                title: 'El Cambio de Marea',
-                subtitle: 'Este gráfico compara las razones por las que los misioneros abandonaron el campo en el siglo XIX frente a principios del siglo XX. Observa el cambio dramático: la supervivencia dejó de ser una anomalía para convertirse en la norma, revelando el impacto de los primeros avances médicos.'
+            gallery: {
+                title: 'Galería Histórica',
+                subtitle: 'Imágenes que documentan la vida y el trabajo de los misioneros a lo largo de los siglos.'
             },
             legacy: {
                 title: 'El Legado de Sanación',
@@ -277,24 +248,17 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             footer: {
                 text: 'Una visualización interactiva basada en el informe "La Corona del Sacrificio".'
-            },
-            chart: {
-                title: 'Causas de Retiro de Misioneros (%)',
-                yAxis: 'Porcentaje de Casos',
-                dataset1: 'Principios del Siglo XX (1900-1928)',
-                dataset2: 'Siglo XIX (Estimación Cualitativa)',
-                labels: ['Enfermedad (personal/familiar)', 'Muerte (personal/familiar)', 'Jubilación/Edad', 'Dificultad de Temperamento', 'Matrimonio', 'Otras Causas']
             }
         }
     };
-
+    
     const appData = {
         profiles: [
             {
                 id: 'brainerd', lifespan: '1718-1747', image: 'https://placehold.co/400x300/D2B48C/333333?text=Brainerd',
                 'pt-BR': { name: 'David Brainerd', summary: 'Sua vida curta e ministério intenso entre os nativos americanos, imortalizados em seu diário, tornaram-se o modelo do missionário abnegado.', details: `<p class="mb-4"><strong>Ministério:</strong> De 1743 a 1747, trabalhou entre os índios Delaware. Apesar de expulso de Yale, seu zelo o levou ao campo missionário, onde seu ministério resultou em um notável avivamento espiritual.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de tuberculose ("consumption") desde jovem. As condições brutais da vida na fronteira — viagens exaustivas, má alimentação e exposição ao clima — agravaram fatalmente sua doença. Faleceu aos 29 anos na casa de Jonathan Edwards.</p><p class="mb-4"><strong>Sofrimento Psicológico:</strong> Lutou contra uma profunda melancolia e depressão, que ele distinguia de suas lutas espirituais. Seus diários revelam uma honestidade brutal sobre sua dor interna.</p><p><strong>Legado:</strong> Seu diário, editado por Jonathan Edwards, tornou-se um dos livros mais influentes da literatura evangélica, inspirando gerações de missionários, incluindo Henry Martyn e William Carey.</p>` },
                 'en': { name: 'David Brainerd', summary: 'His short life and intense ministry among Native Americans, immortalized in his diary, became the model of the selfless missionary.', details: `<p class="mb-4"><strong>Ministry:</strong> From 1743 to 1747, he worked among the Delaware Indians. Despite being expelled from Yale, his zeal led him to the mission field, where his ministry resulted in a notable spiritual revival.</p><p class="mb-4"><strong>Health Challenges:</strong> He suffered from tuberculosis ("consumption") from a young age. The brutal conditions of frontier life—exhausting journeys, poor diet, and exposure to the elements—fatally aggravated his illness. He died at age 29 at the home of Jonathan Edwards.</p><p class="mb-4"><strong>Psychological Suffering:</strong> He battled deep melancholy and depression, which he distinguished from his spiritual struggles. His diaries reveal a brutal honesty about his internal pain.</p><p><strong>Legacy:</strong> His diary, edited by Jonathan Edwards, became one of the most influential books in evangelical literature, inspiring generations of missionaries, including Henry Martyn and William Carey.</p>` },
-                'es': { name: 'David Brainerd', summary: 'Su corta vida e intenso ministerio entre los nativos americanos, inmortalizados en su diario, se convirtieron en el modelo del misionero abnegado.', details: `<p class="mb-4"><strong>Ministerio:</strong> De 1743 a 1747, trabajó entre los indios Delaware. A pesar de ser expulsado de Yale, su celo lo llevó al campo misionero, donde su ministerio resultó en un notable avivamiento espiritual.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Sufrió de tuberculosis ("consunción") desde joven. Las brutales condiciones de la vida en la frontera —viajes agotadores, mala alimentación y exposición al clima— agravaron fatalmente su enfermedad. Falleció a los 29 años en casa de Jonathan Edwards.</p><p class="mb-4"><strong>Sufrimiento Psicológico:</strong> Luchó contra una profunda melancolía y depresión, que él distinguía de sus luchas espirituales. Sus diarios revelan una honestidad brutal sobre su dolor interno.</p><p><strong>Legado:</strong> Su diario, editado por Jonathan Edwards, se convirtió en uno de los libros más influyentes de la literatura evangélica, inspirando a generaciones de misioneros, como Henry Martyn y William Carey.</p>` }
+                'es': { name: 'David Brainerd', summary: 'Su corta vida e intenso ministerio entre los nativos americanos, inmortalizados en su diario, se convirtieron en el modelo del misionero abnegado.', details: `<p class="mb-4"><strong>Ministerio:</strong> De 1743 a 1747, trabajó entre los indios Delaware. A pesar de ser expulsado de Yale, su celo lo llevó al campo misionero, donde su ministerio resultó en un notable avivamento espiritual.</p><p class="mb-4"><strong>Desafíos de Saúde:</strong> Sufrió de tuberculosis ("consunción") desde joven. Las brutales condiciones de la vida en la frontera —viajes agotadores, mala alimentación y exposición al clima— agravaron fatalmente su enfermedad. Falleció a los 29 años en casa de Jonathan Edwards.</p><p class="mb-4"><strong>Sufrimiento Psicológico:</strong> Luchó contra una profunda melancolía y depresión, que él distinguía de sus luchas espirituales. Sus diarios revelan una honestidad brutal sobre su dolor interno.</p><p><strong>Legado:</strong> Su diario, editado por Jonathan Edwards, se convirtió en uno de los libros más influyentes de la literatura evangélica, inspirando a generaciones de misioneros, como Henry Martyn y William Carey.</p>` }
             },
             {
                 id: 'spurgeon', lifespan: '1834-1892', image: 'https://placehold.co/400x300/A0522D/FFFFFF?text=Spurgeon',
@@ -317,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
             {
                 id: 'judson', lifespan: '1788-1850', image: 'https://placehold.co/400x300/6B8E23/FFFFFF?text=Judson',
                 'pt-BR': { name: 'Adoniram Judson', summary: 'Pioneiro na Birmânia, traduziu a Bíblia e suportou prisão e perdas familiares, deixando um legado de perseverança e fé inabalável.', details: `<p class="mb-4"><strong>Ministério:</strong> Um dos primeiros missionários americanos, dedicou quase 40 anos à Birmânia (atual Mianmar). Seu maior legado é a tradução completa da Bíblia para o birmanês, além de compilar o primeiro dicionário birmanês-inglês.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de febres severas e esgotamento. Foi aprisionado por 21 meses em condições terríveis, o que debilitou permanentemente sua saúde. Perdeu duas esposas e várias filhas para doenças como febre e varíola. Morreu de febre aos 62 anos.</p><p><strong>Legado:</strong> Sua resiliência diante da perda e do sofrimento extremo, combinada com seu trabalho monumental de tradução, fez dele uma figura icônica que inspirou o movimento missionário americano do século XIX.</p>` },
-                'en': { name: 'Adoniram Judson', summary: 'A pioneer in Burma, he translated the Bible and endured imprisonment and family losses, leaving a legacy of perseverance and unwavering faith.', details: `<p class="mb-4"><strong>Ministry:</strong> One of the first American missionaries, he dedicated nearly 40 years to Burma (modern-day Myanmar). His greatest legacy is the complete translation of the Bible into Burmese, as well as compiling the first Burmese-English dictionary.</p><p class="mb-4"><strong>Health Challenges:</strong> He suffered from severe fevers and exhaustion. He was imprisoned for 21 months in terrible conditions, which permanently weakened his health. He lost two wives and several daughters to diseases like fever and smallpox. He died of a fever at age 62.</p><p><strong>Legacy:</strong> His resilience in the face of extreme loss and suffering, combined with his monumental translation work, made him an iconic figure who inspired the 19th-century American missionary movement.</p>` },
+                'en': { name: 'Adoniram Judson', summary: 'A pioneer in Burma, he translated the Bible and endured imprisonment and family losses, leaving a legacy of perseverance and unwavering faith.', details: `<p class="mb-4"><strong>Ministry:</strong> One of the first American missionaries, he dedicated nearly 40 years to Burma (modern-day Myanmar). His greatest legacy is the complete translation of the Bible into Burmese, as well as compiling the first Burmese-English dictionary.</p><p class="mb-4"><strong>Health Challenges:</strong> He suffered from severe fevers and exhaustion. He was imprisoned for 21 months in terrible conditions, which permanently weakened his health. He lost two wives and several daughters to diseases like fever and smallpox. He died of a fever at age 62.</p><p><strong>Legacy:</strong> His resilience in the face of extreme loss and suffering, combined with his monumental translation work, made him an iconic figure that inspired the 19th-century American missionary movement.</p>` },
                 'es': { name: 'Adoniram Judson', summary: 'Pionero en Birmania, tradujo la Biblia y soportó la prisión y pérdidas familiares, dejando un legado de perseverancia y fe inquebrantable.', details: `<p class="mb-4"><strong>Ministerio:</strong> Uno de los primeros misioneros estadounidenses, dedicó casi 40 años a Birmania (actual Myanmar). Su mayor legado es la traducción completa de la Biblia al birmano, además de compilar el primer diccionario birmano-inglés.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Sufrió fiebres severas y agotamiento. Fue encarcelado durante 21 meses en condiciones terribles, lo que debilitó permanentemente su salud. Perdió a dos esposas y varias hijas por enfermedades como la fiebre y la viruela. Murió de fiebre a los 62 años.</p><p><strong>Legado:</strong> Su resiliencia ante la pérdida y el sufrimiento extremos, combinada con su monumental trabajo de traducción, lo convirtió en una figura icónica que inspiró el movimiento misionero estadounidense del siglo XIX.</p>` }
             },
             {
@@ -325,6 +289,60 @@ document.addEventListener('DOMContentLoaded', function () {
                 'pt-BR': { name: 'Hudson Taylor', summary: 'Fundador da Missão no Interior da China (CIM), revolucionou as missões com sua ênfase na contextualização cultural e na fé radical.', details: `<p class="mb-4"><strong>Ministério:</strong> Taylor fundou a CIM com o princípio de que os missionários deveriam adotar o vestuário e os costumes chineses. Ele enfatizava a dependência total de Deus para o sustento financeiro, sem apelos diretos por fundos.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sua saúde foi frágil durante toda a vida, sofrendo de problemas hepáticos e colapsos nervosos devido ao estresse. Uma queda em 1874 o deixou paralisado por meses. Perdeu sua primeira esposa e vários filhos para doenças.</p><p><strong>Legado:</strong> Sua visão para a CIM resultou no envio de centenas de missionários para o interior da China. Seu modelo de missão baseada na fé e na inculturação influenciou profundamente as estratégias missionárias modernas.</p>` },
                 'en': { name: 'Hudson Taylor', summary: 'Founder of the China Inland Mission (CIM), he revolutionized missions with his emphasis on cultural contextualization and radical faith.', details: `<p class="mb-4"><strong>Ministry:</strong> Taylor founded the CIM on the principle that missionaries should adopt Chinese dress and customs. He emphasized total reliance on God for financial support, with no direct appeals for funds.</p><p class="mb-4"><strong>Health Challenges:</strong> His health was fragile throughout his life, suffering from liver problems and nervous breakdowns due to stress. A fall in 1874 left him paralyzed for months. He lost his first wife and several children to illness.</p><p><strong>Legacy:</strong> His vision for the CIM resulted in hundreds of missionaries being sent to inland China. His model of faith-based and inculturated mission profoundly influenced modern missionary strategies.</p>` },
                 'es': { name: 'Hudson Taylor', summary: 'Fundador de la Misión al Interior de China (CIM), revolucionó las misiones con su énfasis en la contextualización cultural y la fe radical.', details: `<p class="mb-4"><strong>Ministerio:</strong> Taylor fundó la CIM con el principio de que los misioneros debían adoptar la vestimenta y las costumbres chinas. Enfatizaba la dependencia total de Dios para el sustento financiero, sin solicitar fondos directamente.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Su salud fue frágil durante toda su vida, sufriendo de problemas hepáticos y crisis nerviosas debido al estrés. Una caída en 1874 lo dejó paralizado durante meses. Perdió a su primera esposa y a varios hijos por enfermedades.</p><p><strong>Legado:</strong> Su visión para la CIM resultó en el envío de cientos de misioneros al interior de China. Su modelo de misión basado en la fe y la inculturación influyó profundamente en las estrategias misioneras modernas.</p>` }
+            },
+            {
+                id: 'carmichael', lifespan: '1867-1951', image: 'https://placehold.co/400x300/D2B48C/333333?text=Carmichael',
+                'pt-BR': { 
+                    name: 'Amy Carmichael', 
+                    summary: 'Missionária na Índia que resgatou crianças do templo-escravidão e fundou o Dohnavur Fellowship.',
+                    details: `<p class="mb-4"><strong>Ministério:</strong> Trabalhou na Índia por 55 anos sem férias. Fundou o Dohnavur Fellowship, um refúgio para crianças resgatadas do sistema de prostituição temple.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu um acidente que a deixou acamada por 20 anos. Mesmo assim, continuou liderando o ministério através de cartas e orientação.</p><p><strong>Legado:</strong> Seus livros e poemas continuam inspirando cristãos. O Dohnavur Fellowship ainda opera hoje, cuidando de centenas de crianças.</p>`
+                },
+                'en': { 
+                    name: 'Amy Carmichael', 
+                    summary: 'Missionary in India who rescued children from temple slavery and founded the Dohnavur Fellowship.',
+                    details: `<p class="mb-4"><strong>Ministry:</strong> Worked in India for 55 years without furlough. Founded the Dohnavur Fellowship, a refuge for children rescued from the temple prostitution system.</p><p class="mb-4"><strong>Health Challenges:</strong> Suffered an accident that left her bedridden for 20 years. Even so, she continued leading the ministry through letters and guidance.</p><p><strong>Legacy:</strong> Her books and poems continue to inspire Christians. The Dohnavur Fellowship still operates today, caring for hundreds of children.</p>`
+                },
+                'es': { 
+                    name: 'Amy Carmichael', 
+                    summary: 'Misionera en la India que rescató niños de la esclavitud del templo y fundó la Dohnavur Fellowship.',
+                    details: `<p class="mb-4"><strong>Ministerio:</strong> Trabajó en la India durante 55 años sin permiso. Fundó la Dohnavur Fellowship, un refugio para niños rescatados del sistema de prostitución del templo.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Sufrió un accidente que la dejó postrada en cama durante 20 años. Aun así, continuó liderando el ministerio a través de cartas y orientación.</p><p><strong>Legado:</strong> Sus libros y poemas siguen inspirando a los cristianos. La Dohnavur Fellowship todavía opera hoy, cuidando a cientos de niños.</p>`
+                }
+            },
+            {
+                id: 'paton', lifespan: '1824-1907', image: 'https://placehold.co/400x300/A0522D/FFFFFF?text=Paton',
+                'pt-BR': { 
+                    name: 'John G. Paton', 
+                    summary: 'Missionário nas Novas Hébridas (Vanuatu) que enfrentou tribos canibais e estabeleceu a igreja na região.',
+                    details: `<p class="mb-4"><strong>Ministério:</strong> Trabalhou entre os canibais de Tanna. Mais tarde mudou-se para Aniwa, onde traduziu o Novo Testamento e viu a maioria da ilha se converter.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Enfrentou malária, disenteria e outras doenças tropicais. Sua primeira esposa e filho morreram pouco após chegarem ao campo.</p><p><strong>Legado:</strong> Sua autobiografia se tornou um clássico missionário. A igreja que ele plantou cresceu e hoje é forte em Vanuatu.</p>`
+                },
+                'en': { 
+                    name: 'John G. Paton', 
+                    summary: 'Missionary in the New Hebrides (Vanuatu) who faced cannibal tribes and established the church in the region.',
+                    details: `<p class="mb-4"><strong>Ministry:</strong> Worked among the cannibals of Tanna. Later moved to Aniwa, where he translated the New Testament and saw most of the island convert.</p><p class="mb-4"><strong>Health Challenges:</strong> Faced malaria, dysentery and other tropical diseases. His first wife and child died shortly after arriving on the field.</p><p><strong>Legacy:</strong> His autobiography became a missionary classic. The church he planted grew and is now strong in Vanuatu.</p>`
+                },
+                'es': { 
+                    name: 'John G. Paton', 
+                    summary: 'Misionero en las Nuevas Hébridas (Vanuatu) que enfrentó tribos caníbales y estableció la iglesia en la región.',
+                    details: `<p class="mb-4"><strong>Ministerio:</strong> Trabajó entre los caníbales de Tanna. Más tarde se mudó a Aniwa, donde tradujo el Nuevo Testamento y vio que la mayor parte de la isla se convirtiera.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Enfrentó malaria, disentería y otras enfermedades tropicales. Su primera esposa e hijo murieron poco después de llegar al campo.</p><p><strong>Legado:</strong> Su autobiografía se convirtió en un clásico misionero. La iglesia que plantó creció y ahora es fuerte en Vanuatu.</p>`
+                }
+            },
+            {
+                id: 'aylward', lifespan: '1902-1970', image: 'https://placehold.co/400x300/BDB76B/333333?text=Aylward',
+                'pt-BR': { 
+                    name: 'Gladys Aylward', 
+                    summary: 'Missionária na China que guiou mais de 100 crianças através de montanhas perigosas durante a guerra sino-japonesa.',
+                    details: `<p class="mb-4"><strong>Ministério:</strong> Trabalhou como "foot inspector" para o governo chinês, combatendo o costume de amarrar os pés das meninas. Durante a guerra, liderou um grupo de crianças para a segurança.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de desnutrição e exaustão durante a jornada com as crianças. Mais tarde desenvolveu problemas de saúde que a forçaram a deixar a China.</p><p><strong>Legado:</strong> Sua história foi contada no livro "A Pequena Mulher" e no filme "A Lâmpada da Areia". Ela inspirou muitos com sua coragem e fé.</p>`
+                },
+                'en': { 
+                    name: 'Gladys Aylward', 
+                    summary: 'Missionary in China who led over 100 children through dangerous mountains during the Sino-Japanese War.',
+                    details: `<p class="mb-4"><strong>Ministry:</strong> Worked as a "foot inspector" for the Chinese government, fighting the custom of binding girls' feet. During the war, she led a group of children to safety.</p><p class="mb-4"><strong>Health Challenges:</strong> Suffered from malnutrition and exhaustion during the journey with the children. Later developed health problems that forced her to leave China.</p><p><strong>Legacy:</strong> Her story was told in the book "The Small Woman" and the film "The Inn of the Sixth Happiness". She inspired many with her courage and faith.</p>`
+                },
+                'es': { 
+                    name: 'Gladys Aylward', 
+                    summary: 'Misionera en China que guió a más de 100 niños a través de montañas peligrosas durante la guerra sino-japonesa.',
+                    details: `<p class="mb-4"><strong>Ministerio:</strong> Trabajó como "inspectora de pies" para el gobierno chino, luchando contra la costumbre de vendar los pies de las niñas. Durante la guerra, lideró a un grupo de niños hacia la seguridad.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Sufrió desnutrición y agotamiento durante el viaje con los niños. Más tarde desarrolló problemas de salud que la obligaron a dejar China.</p><p><strong>Legado:</strong> Su historia fue contada en el libro "La Mujer Pequeña" y en la película "La Posada de la Sexta Felicidad". Inspiró a muchos con su coraje y fe.</p>`
+                }
             }
         ],
         contextTabs: {
@@ -375,56 +393,49 @@ document.addEventListener('DOMContentLoaded', function () {
                 { quote: 'Deseo consumirme por Dios.', author: 'Henry Martyn', context: 'Una frase que encapsula su teología del sacrificio total, viendo la vida no como algo a preservar, sino para ser gastada para la gloria de Dios.' }
             ]
         },
-        chartData: {
-            datasets: [
-                { data: [31, 15, 8, 6, 6, 15], backgroundColor: '#8B4513', borderColor: '#6F3810', borderWidth: 1 },
-                { data: [80, 15, 1, 1, 1, 2], backgroundColor: '#BDB76B', borderColor: '#A09A50', borderWidth: 1 }
-            ]
-        }
+        galleryData: [
+            { src: 'https://placehold.co/400x300/D2B48C/333333?text=Imagem+1', caption: 'Missionários em campo, século XIX' },
+            { src: 'https://placehold.co/400x300/A0522D/FFFFFF?text=Imagem+2', caption: 'Hospital missionário na África' },
+            { src: 'https://placehold.co/400x300/BDB76B/333333?text=Imagem+3', caption: 'Tradução da Bíblia' },
+            { src: 'https://placehold.co/400x300/8FBC8F/333333?text=Imagem+4', caption: 'Escola missionária na Ásia' },
+            { src: 'https://placehold.co/400x300/6B8E23/FFFFFF?text=Imagem+5', caption: 'Trabalho comunitário' },
+            { src: 'https://placehold.co/400x300/800000/FFFFFF?text=Imagem+6', caption: 'Missionários modernos' }
+        ]
     };
-
     let currentLanguage = 'pt-BR';
-    let mortalityChart;
-
     const modal = document.getElementById('modal');
     const modalContent = document.getElementById('modal-content');
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
     const modalClose = document.getElementById('modal-close');
-
     function openModal(profile) {
         modalTitle.textContent = profile[currentLanguage].name;
         modalBody.innerHTML = profile[currentLanguage].details;
         modal.classList.remove('opacity-0', 'pointer-events-none');
         modalContent.classList.remove('scale-95');
     }
-
     function closeModal() {
         modal.classList.add('opacity-0', 'pointer-events-none');
         modalContent.classList.add('scale-95');
     }
-
     modalClose.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
             closeModal();
         }
     });
-
     function renderContent(lang) {
         currentLanguage = lang;
         const content = languageContent[lang];
-
         // Update Nav
         const navMenu = document.getElementById('nav-menu');
         navMenu.innerHTML = `
             <li><a href="#profiles" class="nav-link font-semibold pb-1">${content.nav.profiles}</a></li>
             <li><a href="#context" class="nav-link font-semibold pb-1">${content.nav.context}</a></li>
-            <li><a href="#data" class="nav-link font-semibold pb-1">${content.nav.data}</a></li>
+            <li><a href="#gallery" class="nav-link font-semibold pb-1">${content.nav.gallery}</a></li>
             <li><a href="#legacy" class="nav-link font-semibold pb-1">${content.nav.legacy}</a></li>
             <li><a href="#faith" class="nav-link font-semibold pb-1">${content.nav.faith}</a></li>
         `;
-
         // Update static text
         document.getElementById('hero-title').textContent = content.hero.title;
         document.getElementById('hero-subtitle').textContent = content.hero.subtitle;
@@ -432,27 +443,25 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('profiles-subtitle').textContent = content.profiles.subtitle;
         document.getElementById('context-title').textContent = content.context.title;
         document.getElementById('context-subtitle').textContent = content.context.subtitle;
-        document.getElementById('data-title').textContent = content.data.title;
-        document.getElementById('data-subtitle').textContent = content.data.subtitle;
+        document.getElementById('gallery-title').textContent = content.gallery.title;
+        document.getElementById('gallery-subtitle').textContent = content.gallery.subtitle;
         document.getElementById('legacy-title').textContent = content.legacy.title;
         document.getElementById('legacy-subtitle').textContent = content.legacy.subtitle;
         document.getElementById('faith-title').textContent = content.faith.title;
         document.getElementById('faith-subtitle').textContent = content.faith.subtitle;
         document.getElementById('footer-text').textContent = content.footer.text;
-
         // Render dynamic content
         renderProfiles(lang);
         renderContextTabs(lang);
         renderLegacy(lang);
         renderFaith(lang);
-        updateChart(lang);
+        renderGallery(lang);
 
         // Update active language button
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.lang === lang);
         });
     }
-
     function renderProfiles(lang) {
         const profilesGrid = document.getElementById('profiles-grid');
         profilesGrid.innerHTML = '';
@@ -472,7 +481,6 @@ document.addEventListener('DOMContentLoaded', function () {
             profilesGrid.appendChild(card);
         });
     }
-
     function renderContextTabs(lang) {
         const tabsButtons = document.getElementById('tabs-buttons');
         const tabsContent = document.getElementById('tabs-content');
@@ -497,7 +505,6 @@ document.addEventListener('DOMContentLoaded', function () {
             tabsButtons.appendChild(button);
         });
     }
-
     function renderLegacy(lang) {
         const legacyPioneers = document.getElementById('legacy-pioneers');
         legacyPioneers.innerHTML = '';
@@ -529,46 +536,21 @@ document.addEventListener('DOMContentLoaded', function () {
             faithQuotes.appendChild(block);
         });
     }
-
-    function updateChart(lang) {
-        if (mortalityChart) {
-            mortalityChart.destroy();
-        }
-        const chartLang = languageContent[lang].chart;
-        const ctx = document.getElementById('mortalityChart').getContext('2d');
-        mortalityChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: chartLang.labels,
-                datasets: [
-                    { ...appData.chartData.datasets[0], label: chartLang.dataset1 },
-                    { ...appData.chartData.datasets[1], label: chartLang.dataset2 }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    title: { display: true, text: chartLang.title, font: { size: 16, family: 'Lora' }, color: '#333333' },
-                    tooltip: { callbacks: { label: (context) => `${context.dataset.label || ''}: ${context.parsed.y !== null ? context.parsed.y + '%' : ''}` } },
-                    legend: { position: 'bottom' }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: chartLang.yAxis },
-                        ticks: { callback: (value) => value + '%' }
-                    },
-                    x: {
-                        ticks: {
-                            callback: function(value) {
-                                const label = this.getLabelForValue(value);
-                                return label.length > 15 ? label.substring(0, 15) + '...' : label;
-                            }
-                        }
-                    }
-                }
-            }
+    
+    function renderGallery(lang) {
+        const galleryGrid = document.getElementById('gallery-grid');
+        galleryGrid.innerHTML = '';
+        
+        appData.galleryData.forEach(item => {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item bg-white/50 rounded-lg shadow overflow-hidden';
+            galleryItem.innerHTML = `
+                <img src="${item.src}" alt="${item.caption}" class="w-full h-48 object-cover">
+                <div class="p-3">
+                    <p class="text-sm text-gray-700">${item.caption}</p>
+                </div>
+            `;
+            galleryGrid.appendChild(galleryItem);
         });
     }
     
@@ -580,7 +562,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     });
-
+    
     // ===================================================================
     // MELHORIA: Lógica de navegação ativa
     // ===================================================================
@@ -588,7 +570,6 @@ document.addEventListener('DOMContentLoaded', function () {
         let current = '';
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.nav-link');
-
         // Encontra a seção atual na visualização
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
@@ -596,7 +577,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 current = section.getAttribute('id');
             }
         });
-
         // Atualiza os links de navegação
         navLinks.forEach(link => {
             link.classList.remove('active');
@@ -607,10 +587,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
     // Renderização inicial
     renderContent(currentLanguage);
-
     // Chama a função de navegação uma vez no carregamento para definir o estado inicial
     updateActiveNav();
     
@@ -618,6 +596,5 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('scroll', updateActiveNav);
 });
 </script>
-
 </body>
 </html>
