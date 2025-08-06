@@ -126,8 +126,13 @@
             </div>
         </section>
     </main>
-    <footer class="text-center py-6 mt-12 border-t border-gray-300">
-        <p id="footer-text" class="text-sm text-gray-500"></p>
+    <footer class="text-center py-8 mt-12 border-t border-gray-300 bg-white/30">
+        <div class="container mx-auto px-6 space-y-3">
+            <p class="font-semibold text-lg text-[#8B4513]">Pronto para o Campo. Pronto para a Missão.</p>
+            <p class="text-sm text-gray-600 max-w-xl mx-auto">Inove sua missão, amplie seu impacto e cuide de vidas com a união poderosa da tecnologia e da compaixão.</p>
+            <a href="https://wa.me/message/DY63DAZ7BSHKL1" target="_blank" class="inline-block bg-[#8B4513] text-white px-5 py-2 rounded-lg shadow hover:bg-[#6F3810] transition-colors font-semibold">Entre em Contato</a>
+            <p class="text-xs text-gray-500 pt-4">© 2024 Telessaúde Missionária. Todos os direitos reservados.</p>
+        </div>
     </footer>
     <div id="modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
         <div id="modal-content" class="modal-content bg-[#F8F4E3] rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto transform scale-95">
@@ -173,9 +178,6 @@ document.addEventListener('DOMContentLoaded', function () {
             faith: {
                 title: 'A Força da Fé',
                 subtitle: 'Qual era a fonte de sua resiliência? Uma teologia forjada na aflição, que via o sofrimento não como um fim, mas como um meio de glorificar a Deus e servir à humanidade. A dor não diminuía sua fé; ela a aprofundava.'
-            },
-            footer: {
-                text: 'Uma visualização interativa baseada no relatório "A Coroa do Sacrifício".'
             }
         },
         'en': {
@@ -209,9 +211,6 @@ document.addEventListener('DOMContentLoaded', function () {
             faith: {
                 title: 'The Strength of Faith',
                 subtitle: 'What was the source of their resilience? A theology forged in affliction, which saw suffering not as an end, but as a means to glorify God and serve humanity. Pain did not diminish their faith; it deepened it.'
-            },
-            footer: {
-                text: 'An interactive visualization based on the "Crown of Sacrifice" report.'
             }
         },
         'es': {
@@ -245,9 +244,6 @@ document.addEventListener('DOMContentLoaded', function () {
             faith: {
                 title: 'La Fuerza de la Fe',
                 subtitle: '¿Cuál era la fuente de su resiliencia? Una teología forjada en la aflicción, que veía el sufrimiento no como un fin, sino como un medio para glorificar a Dios y servir a la humanidad. El dolor no disminuyó su fe; la profundizó.'
-            },
-            footer: {
-                text: 'Una visualización interactiva basada en el informe "La Corona del Sacrificio".'
             }
         }
     };
@@ -258,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 id: 'brainerd', lifespan: '1718-1747', image: 'https://placehold.co/400x300/D2B48C/333333?text=Brainerd',
                 'pt-BR': { name: 'David Brainerd', summary: 'Sua vida curta e ministério intenso entre os nativos americanos, imortalizados em seu diário, tornaram-se o modelo do missionário abnegado.', details: `<p class="mb-4"><strong>Ministério:</strong> De 1743 a 1747, trabalhou entre os índios Delaware. Apesar de expulso de Yale, seu zelo o levou ao campo missionário, onde seu ministério resultou em um notável avivamento espiritual.</p><p class="mb-4"><strong>Desafios de Saúde:</strong> Sofreu de tuberculose ("consumption") desde jovem. As condições brutais da vida na fronteira — viagens exaustivas, má alimentação e exposição ao clima — agravaram fatalmente sua doença. Faleceu aos 29 anos na casa de Jonathan Edwards.</p><p class="mb-4"><strong>Sofrimento Psicológico:</strong> Lutou contra uma profunda melancolia e depressão, que ele distinguia de suas lutas espirituais. Seus diários revelam uma honestidade brutal sobre sua dor interna.</p><p><strong>Legado:</strong> Seu diário, editado por Jonathan Edwards, tornou-se um dos livros mais influentes da literatura evangélica, inspirando gerações de missionários, incluindo Henry Martyn e William Carey.</p>` },
                 'en': { name: 'David Brainerd', summary: 'His short life and intense ministry among Native Americans, immortalized in his diary, became the model of the selfless missionary.', details: `<p class="mb-4"><strong>Ministry:</strong> From 1743 to 1747, he worked among the Delaware Indians. Despite being expelled from Yale, his zeal led him to the mission field, where his ministry resulted in a notable spiritual revival.</p><p class="mb-4"><strong>Health Challenges:</strong> He suffered from tuberculosis ("consumption") from a young age. The brutal conditions of frontier life—exhausting journeys, poor diet, and exposure to the elements—fatally aggravated his illness. He died at age 29 at the home of Jonathan Edwards.</p><p class="mb-4"><strong>Psychological Suffering:</strong> He battled deep melancholy and depression, which he distinguished from his spiritual struggles. His diaries reveal a brutal honesty about his internal pain.</p><p><strong>Legacy:</strong> His diary, edited by Jonathan Edwards, became one of the most influential books in evangelical literature, inspiring generations of missionaries, including Henry Martyn and William Carey.</p>` },
-                'es': { name: 'David Brainerd', summary: 'Su corta vida e intenso ministerio entre los nativos americanos, inmortalizados en su diario, se convirtieron en el modelo del misionero abnegado.', details: `<p class="mb-4"><strong>Ministerio:</strong> De 1743 a 1747, trabajó entre los indios Delaware. A pesar de ser expulsado de Yale, su celo lo llevó al campo misionero, donde su ministerio resultó en un notable avivamento espiritual.</p><p class="mb-4"><strong>Desafíos de Saúde:</strong> Sufrió de tuberculosis ("consunción") desde joven. Las brutales condiciones de la vida en la frontera —viajes agotadores, mala alimentación y exposición al clima— agravaron fatalmente su enfermedad. Falleció a los 29 años en casa de Jonathan Edwards.</p><p class="mb-4"><strong>Sufrimiento Psicológico:</strong> Luchó contra una profunda melancolía y depresión, que él distinguía de sus luchas espirituales. Sus diarios revelan una honestidad brutal sobre su dolor interno.</p><p><strong>Legado:</strong> Su diario, editado por Jonathan Edwards, se convirtió en uno de los libros más influyentes de la literatura evangélica, inspirando a generaciones de misioneros, como Henry Martyn y William Carey.</p>` }
+                'es': { name: 'David Brainerd', summary: 'Su corta vida e intenso ministerio entre los nativos americanos, inmortalizados en su diario, se convirtieron en el modelo del misionero abnegado.', details: `<p class="mb-4"><strong>Ministerio:</strong> De 1743 a 1747, trabajó entre los indios Delaware. A pesar de ser expulsado de Yale, su celo lo llevó al campo misionero, donde su ministerio resultó en un notable avivamento espiritual.</p><p class="mb-4"><strong>Desafíos de Saúde:</strong> Sufrió de tuberculosis ("consunción") desde joven. Las brutales condiciones de la vida en la frontera —viajes agotadores, mala alimentación y exposición ao clima— agravaram fatalmente su enfermedad. Falleció a los 29 años en casa de Jonathan Edwards.</p><p class="mb-4"><strong>Sufrimiento Psicológico:</strong> Luchó contra uma profunda melancolía y depresión, que él distinguía de sus luchas espirituales. Sus diarios revelan una honestidad brutal sobre su dolor interno.</p><p><strong>Legado:</strong> Su diario, editado por Jonathan Edwards, se convirtió en uno de los libros más influyentes de la literatura evangélica, inspirando a generaciones de misioneros, como Henry Martyn y William Carey.</p>` }
             },
             {
                 id: 'spurgeon', lifespan: '1834-1892', image: 'https://placehold.co/400x300/A0522D/FFFFFF?text=Spurgeon',
@@ -322,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 'es': { 
                     name: 'John G. Paton', 
-                    summary: 'Misionero en las Nuevas Hébridas (Vanuatu) que enfrentó tribos caníbales y estableció la iglesia en la región.',
+                    summary: 'Misionero en las Nuevas Hébridas (Vanuatu) que enfrentó tribus caníbales y estableció la iglesia en la región.',
                     details: `<p class="mb-4"><strong>Ministerio:</strong> Trabajó entre los caníbales de Tanna. Más tarde se mudó a Aniwa, donde tradujo el Nuevo Testamento y vio que la mayor parte de la isla se convirtiera.</p><p class="mb-4"><strong>Desafíos de Salud:</strong> Enfrentó malaria, disentería y otras enfermedades tropicales. Su primera esposa e hijo murieron poco después de llegar al campo.</p><p><strong>Legado:</strong> Su autobiografía se convirtió en un clásico misionero. La iglesia que plantó creció y ahora es fuerte en Vanuatu.</p>`
                 }
             },
@@ -357,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 { id: 'treatments', label: 'Medicine of Impotence', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">To Cure or to Harm?</h4><p>Medical practice of the time was based on ancient humoral theories. Aggressive therapies like bloodletting and purges with emetics were applied to almost all diseases, aiming to "rebalance the humors." These practices often further weakened patients. The lack of a germ theory meant that basic concepts of hygiene and sterilization were non-existent.</p>` }
             ],
             'es': [
-                { id: 'tuberculosis', label: 'Tuberculosis', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">La Peste Blanca</h4><p>Principal causa de muerte en Europa y América, la tuberculosis (o "consunción") se cobró la vida de Brainerd y Martyn. La enfermedad era mal entendida, a menudo atribuida a una constitución débil o predisposición hereditaria. El tratamiento estándar en sanatorios, que se popularizó en el siglo XIX, se basaba en la creencia de que el aire fresco, el reposo y una dieta nutritiva podían curar la enfermedad, pero las tasas de mortalidad seguían siendo altísimas.</p>` },
+                { id: 'tuberculosis', label: 'Tuberculosis', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">La Peste Blanca</h4><p>Principal causa de muerte en Europa y América, la tuberculosis (o "consunción") se cobró la vida de Brainerd y Martyn. La enfermedad era mal entendida, a menudo atribuida a una constitución débil o predisposición hereditaria. El tratamiento estándar en sanatorios, que se popularizó en el siglo XIX, se basaba en la creencia de que el aire fresco, el reposo y una dieta nutritiva podían curar la enfermedad, pero las tasas de mortalidade seguían siendo altísimas.</p>` },
                 { id: 'malaria', label: 'Malaria y Fiebres', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">El Mal Aire</h4><p>En las regiones tropicales, la malaria era la mayor amenaza. Se creía que era causada por "mal aire" (mal'aria) de los pantanos. La verdadera causa (el parásito Plasmodium) y su vector (el mosquito Anopheles) no se descubrieron hasta finales del siglo XIX. El único tratamiento eficaz era la quinina, pero era muy tóxica y la dosificación era imprecisa, causando graves efectos secundarios.</p>` },
                 { id: 'treatments', label: 'Medicina de la Impotencia', content: `<h4 class="text-xl font-bold mb-2 text-[#8B4513]">¿Curar o Dañar?</h4><p>La práctica médica de la época se basaba en antiguas teorías humorales. Terapias agresivas como sangrías y purgas con eméticos se aplicaban a casi todas las enfermedades, con el objetivo de "reequilibrar los humores". Estas prácticas a menudo debilitaban aún más a los pacientes. La falta de una teoría de los gérmenes significaba que los conceptos básicos de higiene y esterilización eran inexistentes.</p>` }
             ]
@@ -373,13 +369,13 @@ document.addEventListener('DOMContentLoaded', function () {
             ],
             'es': [
                 { name: 'Ida S. Scudder', lifespan: '1870-1960', contribution: 'Tras presenciar la muerte de tres mujeres en el parto en la India, se hizo médica y fundó un pequeño dispensario que se convirtió en el Christian Medical College & Hospital (CMC) en Vellore, hoy una de las instituciones médicas más prestigiosas de la India.' },
-                { name: 'Albert Schweitzer', lifespan: '1875-1965', contribution: 'Un renombrado teólogo y músico europeo que, a los 30 años, estudió medicina para servir en África. Fundó un hospital en Lambaréné (Gabón) a partir de un gallinero, que se convirtió en un centro vital para el tratamiento de la lepra y un símbolo mundial del servicio humanitario.' }
+                { name: 'Albert Schweitzer', lifespan: '1875-1965', contribution: 'Un renombrado teólogo y músico europeo que, a los 30 años, estudió medicina para servir en África. Fundó un hospital en Lambaréné (Gabón) a partir de un gallinheiro, que se convirtió en un centro vital para el tratamiento de la lepra y un símbolo mundial del servicio humanitario.' }
             ]
         },
         faith: {
             'pt-BR': [
                 { quote: 'Oh! quando o tempo dará lugar à eternidade?', author: 'Henry Martyn', context: 'Em sua última anotação no diário, expressando seu anseio pela libertação do sofrimento e sua esperança celestial.' },
-                { quote: 'Meu trabalho está feito.', author: 'Charles Spurgeon', context: 'Palavras ditas ao seu secretário pouco antes de morrer, refletindo a aceitação do fim de uma vida de serviço e dor.' },
+                { quote: 'Meu trabalho está feito.', author: 'Charles Spurgeon', context: 'Palavras ditas ao seu secretário poco antes de morrer, refletindo a aceitação do fim de uma vida de serviço e dor.' },
                 { quote: 'Desejo esgotar-me por Deus.', author: 'Henry Martyn', context: 'Uma frase que encapsula sua teologia do sacrifício total, vendo a vida não como algo a ser preservado, mas a ser gasto para a glória de Deus.' }
             ],
             'en': [
@@ -449,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('legacy-subtitle').textContent = content.legacy.subtitle;
         document.getElementById('faith-title').textContent = content.faith.title;
         document.getElementById('faith-subtitle').textContent = content.faith.subtitle;
-        document.getElementById('footer-text').textContent = content.footer.text;
+
         // Render dynamic content
         renderProfiles(lang);
         renderContextTabs(lang);
